@@ -15,7 +15,37 @@ point                                            ends                           
 ;-----[A]---------------------------------------------------------------------------------------------------------------
 
 ;-----[B]---------------------------------------------------------------------------------------------------------------
+BITMAPINFOHEADER                                struct
+biSize                                          dword               ?
+biWidth                                         qword               ?
+biHeight                                        qword               ?
+biPlanes                                        word                ?
+biBitCount                                      word                ?
+biCompression                                   dword               ?
+biSizeImage                                     dword               ?
+biXPelsPerMeter                                 qword               ?
+biYPelsPerMeter                                 qword               ?
+biClrUser                                       dword               ?
+biClrImportant                                  dword               ?
+BITMAPINFOHEADER                                ends
 
+RGBQUAD                                         struct
+rgbBlue                                         byte                ?
+rgbGreen                                        byte                ?
+rgbRed                                          byte                ?
+rgbReserved                                     byte                ?
+RGBQUAD                                         ends
+
+BITMAPINFO                                      struct
+bmiHeader                                       BITMAPINFOHEADER    {}
+bmiColors                                       RGBQUAD             {}
+BITMAPINFO                                      ends
+
+; HBITMAP                                         struct
+; HBITMAP                                         ends
+
+; HDC                                             struct
+; HDC                                             ends
 ;-----[C]---------------------------------------------------------------------------------------------------------------
 
 ;-----[D]---------------------------------------------------------------------------------------------------------------

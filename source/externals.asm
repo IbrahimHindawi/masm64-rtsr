@@ -49,6 +49,9 @@ GetStartupInfo     textequ     <__imp_GetStartupInfoA>
 
 extrn              __imp_UpdateWindow:qword
 UpdateWindow       textequ     <__imp_UpdateWindow>
+
+extrn              __imp_CreateCompatibleDC:qword
+CreateCompatibleDC textequ     <__imp_CreateCompatibleDC>
 ;------[H]--------------------------------------------------------------------------------------------------------------
 
 ;------[I]--------------------------------------------------------------------------------------------------------------
