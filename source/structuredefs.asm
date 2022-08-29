@@ -5,6 +5,15 @@
 ;                                                                                                                      -
 ;-----------------------------------------------------------------------------------------------------------------------
 
+rect                                             struct                                                                ; Declare structure
+                                                ;-----------------------------------------------------------------------
+left                                             dword               ?                                                 ; Left edge
+top                                              dword               ?                                                 ; Top edge
+right                                            dword               ?                                                 ; Right edge
+bottom                                           dword               ?                                                 ; Bottom edge
+                                                ;-----------------------------------------------------------------------
+rect                                             ends                                                                  ; End structure declaration
+
 point                                            struct                                                                ; Declare structure
                                                 ;-----------------------------------------------------------------------
 x                                                dword               ?                                                 ;
@@ -15,37 +24,68 @@ point                                            ends                           
 ;-----[A]---------------------------------------------------------------------------------------------------------------
 
 ;-----[B]---------------------------------------------------------------------------------------------------------------
+renderFrame                                     struct
+                                                ;-----------------------------------------------------------------------
+rfWidth                                         dword               ?
+rfHeight                                        dword               ?
+rfPixels                                        qword               ?
+                                                ;-----------------------------------------------------------------------
+renderFrame                                     ends   
+
 BITMAPINFOHEADER                                struct
+                                                ;-----------------------------------------------------------------------
 biSize                                          dword               ?
-biWidth                                         qword               ?
-biHeight                                        qword               ?
+biWidth                                         dword               ?
+biHeight                                        dword               ?
 biPlanes                                        word                ?
 biBitCount                                      word                ?
 biCompression                                   dword               ?
 biSizeImage                                     dword               ?
-biXPelsPerMeter                                 qword               ?
-biYPelsPerMeter                                 qword               ?
+biXPelsPerMeter                                 dword               ?
+biYPelsPerMeter                                 dword               ?
 biClrUser                                       dword               ?
 biClrImportant                                  dword               ?
+                                                ;-----------------------------------------------------------------------
 BITMAPINFOHEADER                                ends
 
 RGBQUAD                                         struct
+                                                ;-----------------------------------------------------------------------
 rgbBlue                                         byte                ?
 rgbGreen                                        byte                ?
 rgbRed                                          byte                ?
 rgbReserved                                     byte                ?
+                                                ;-----------------------------------------------------------------------
 RGBQUAD                                         ends
 
 BITMAPINFO                                      struct
+                                                ;-----------------------------------------------------------------------
 bmiHeader                                       BITMAPINFOHEADER    {}
 bmiColors                                       RGBQUAD             {}
+                                                ;-----------------------------------------------------------------------
 BITMAPINFO                                      ends
 
-; HBITMAP                                         struct
-; HBITMAP                                         ends
+HBITMAP                                         struct
+                                                ;-----------------------------------------------------------------------
+unused                                          qword               ?
+                                                ;-----------------------------------------------------------------------
+HBITMAP                                         ends
 
-; HDC                                             struct
-; HDC                                             ends
+HDC                                             struct
+                                                ;-----------------------------------------------------------------------
+unused                                          qword               ?
+                                                ;-----------------------------------------------------------------------
+HDC                                             ends
+
+PAINTSTRUCT                                     struct
+                                                ;-----------------------------------------------------------------------
+psHdc                                           HDC                 {}
+fErase                                          dword               ?
+rcPaint                                         rect                {}
+fRestore                                        dword               ?
+fIncUpdate                                      dword               ?
+rgbReserved                                     byte                32 dup(?)
+                                                ;-----------------------------------------------------------------------
+PAINTSTRUCT                                     ends
 ;-----[C]---------------------------------------------------------------------------------------------------------------
 
 ;-----[D]---------------------------------------------------------------------------------------------------------------
@@ -201,36 +241,28 @@ msg                                              ends                           
 
 ;-----[R]---------------------------------------------------------------------------------------------------------------
 
-rect                                             struct                                                                ; Declare structure
-                                                ;-----------------------------------------------------------------------
-left                                             dword               ?                                                 ; Left edge
-top                                              dword               ?                                                 ; Top edge
-right                                            dword               ?                                                 ; Right edge
-bottom                                           dword               ?                                                 ; Bottom edge
-                                                ;-----------------------------------------------------------------------
-rect                                             ends                                                                  ; End structure declaration
 
 ;-----[S]---------------------------------------------------------------------------------------------------------------
-STARTUPINFO         struct
-cb                  qword     sizeof ( STARTUPINFO )         
-lpReserved          qword     ?         
-lpDesktop           qword     ?         
-lpTitle             qword     ?         
-dwX                 dword     ?         
-dwY                 dword     ?         
-dwXSize             dword     ?         
-dwYSize             dword     ?         
-dwXCountChars       dword     ?         
-dwYCountChars       dword     ?         
-dwFillAttribute     dword     ?         
-dwFlags             dword     ?         
-wShowWindow         word      ?         
-cbReserved2         word      3 dup ( ? )
-lpReserved2         qword     ?         
-hStdInput           qword     ?         
-hStdOutput          qword     ?         
-hStdError           qword     ?         
-STARTUPINFO         ends
+STARTUPINFO                                     struct
+cb                                              qword               sizeof ( STARTUPINFO )         
+lpReserved                                      qword               ?         
+lpDesktop                                       qword               ?         
+lpTitle                                         qword               ?         
+dwX                                             dword               ?         
+dwY                                             dword               ?         
+dwXSize                                         dword               ?         
+dwYSize                                         dword               ?         
+dwXCountChars                                   dword               ?         
+dwYCountChars                                   dword               ?         
+dwFillAttribute                                 dword               ?         
+dwFlags                                         dword               ?         
+wShowWindow                                     word                ?         
+cbReserved2                                     word                3 dup ( ? )
+lpReserved2                                     qword               ?         
+hStdInput                                       qword               ?         
+hStdOutput                                      qword               ?         
+hStdError                                       qword               ?         
+STARTUPINFO                                     ends
 ;-----[T]---------------------------------------------------------------------------------------------------------------
 
 ;-----[U]---------------------------------------------------------------------------------------------------------------

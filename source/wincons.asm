@@ -739,10 +739,17 @@ ws_tiledwindow                                   equ                 00CF0000h  
 ws_visible                                       equ                 10000000h                                         ;
 ws_vscroll                                       equ                 00200000h                                         ;
 
-mw_style                                         equ                ws_overlapped OR ws_caption OR ws_sysmenu OR ws_thickframe OR ws_minimizebox OR ws_maximizebox
+; mw_style                                         equ                 ws_overlapped OR ws_caption OR ws_sysmenu OR ws_thickframe OR ws_minimizebox OR ws_maximizebox
+mw_style                                         equ                 ws_overlapped OR ws_caption OR ws_sysmenu OR ws_thickframe OR ws_minimizebox OR ws_maximizebox OR ws_visible
 ;-----[X]---------------------------------------------------------------------------------------------------------------
 
 ;-----[Y]---------------------------------------------------------------------------------------------------------------
 
 ;-----[Z]---------------------------------------------------------------------------------------------------------------
 
+BI_RGB                                           equ                 0
+BI_RLE8                                          equ                 1
+BI_RLE4                                          equ                 2
+BI_BITFIELDS                                     equ                 3
+BI_JPEG                                          equ                 4
+BI_PNG                                           equ                 5

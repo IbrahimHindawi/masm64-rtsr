@@ -39,6 +39,7 @@ fwpr_rte                                         qword               fwpr_00100 
 
 Main_CB_Rte                                      qword               Main_CB_EraseBkgnd                                ; WM_EraseBkgnd
                                                  qword               Main_CB_Paint                                     ; WM_Paint
+                                                 qword               Main_CB_Size                                      ; WM_Size
                                                  qword               Main_CB_Close                                     ; WM_Close
                                                  qword               Main_CB_Destroy                                   ; WM_Destroy
 

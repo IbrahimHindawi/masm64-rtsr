@@ -63,7 +63,7 @@ mmsg                                             msg                 <>
 
 ;-----[N]---------------------------------------------------------------------------------------------------------------
 
-numElements                                      qword               ( layout_E - layout ) / sizeof ( d3d11_input_element_desc ) ; Number of elements in layout array
+; numElements                                      qword               ( layout_E - layout ) / sizeof ( d3d11_input_element_desc ) ; Number of elements in layout array
 
 ;-----[O]---------------------------------------------------------------------------------------------------------------
 

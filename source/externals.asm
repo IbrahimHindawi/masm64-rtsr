@@ -41,17 +41,44 @@ extrn                                            __imp_GetThreadDesktop:qword   
 extrn                                            __imp_GetWindowTextA:qword                                            ;
 extrn                                            __imp_GetCommandLineA:qword                                            ;
 
-extrn              __imp_GetModuleHandleA:qword
-GetModuleHandle    textequ     <__imp_GetModuleHandleA>
+extrn               __imp_GetModuleHandleA:qword
+GetModuleHandle     textequ     <__imp_GetModuleHandleA>
 
-extrn              __imp_GetStartupInfoA:qword
-GetStartupInfo     textequ     <__imp_GetStartupInfoA>
+extrn               __imp_GetStartupInfoA:qword
+GetStartupInfo      textequ     <__imp_GetStartupInfoA>
 
-extrn              __imp_UpdateWindow:qword
-UpdateWindow       textequ     <__imp_UpdateWindow>
+extrn               __imp_UpdateWindow:qword
+UpdateWindow        textequ     <__imp_UpdateWindow>
 
-extrn              __imp_CreateCompatibleDC:qword
-CreateCompatibleDC textequ     <__imp_CreateCompatibleDC>
+extrn               __imp_CreateCompatibleDC:qword
+CreateCompatibleDC  textequ     <__imp_CreateCompatibleDC>
+
+extrn               __imp_InvalidateRect:qword
+InvalidateRect      textequ     <__imp_InvalidateRect>
+
+extrn               __imp_UpdateWindow:qword
+UpdateWindow        textequ     <__imp_UpdateWindow>
+
+extrn               __imp_BeginPaint:qword
+BeginPaint          textequ     <__imp_BeginPaint>
+
+extrn               __imp_BitBlt:qword
+BitBlt              textequ     <__imp_BitBlt>
+
+extrn               __imp_EndPaint:qword
+EndPaint            textequ     <__imp_EndPaint>
+
+; extrn               __imp_LOWORD:qword
+; LOWORD              textequ     <__imp_LOWORD>
+
+extrn               __imp_DeleteObject:qword
+DeleteObject        textequ     <__imp_DeleteObject>
+
+extrn               __imp_CreateDIBSection:qword
+CreateDIBSection    textequ     <__imp_CreateDIBSection>
+
+extrn               __imp_SelectObject:qword
+SelectObject        textequ     <__imp_SelectObject>
 ;------[H]--------------------------------------------------------------------------------------------------------------
 
 ;------[I]--------------------------------------------------------------------------------------------------------------
@@ -82,6 +109,7 @@ extrn                                            __imp_PostQuitMessage:qword    
 ;------[R]--------------------------------------------------------------------------------------------------------------
 
 extrn                                            __imp_RegisterClassExA:qword                                          ;
+RegisterClassEx                                  textequ             <__imp_RegisterClassExA>                          ;
 
 ;------[S]--------------------------------------------------------------------------------------------------------------
 
@@ -186,7 +214,6 @@ PostQuitMessage                                  textequ             <__imp_Post
 
 ;------[R]--------------------------------------------------------------------------------------------------------------
 
-RegisterClassEx                                  textequ             <__imp_RegisterClassExA>                          ;
 
 ;------[S]--------------------------------------------------------------------------------------------------------------
 

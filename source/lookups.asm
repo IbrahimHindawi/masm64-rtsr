@@ -35,6 +35,7 @@ Main_CB_Lookup                                   qword               ( Main_CB_L
                                                 ;-----------------------------------------------------------------------
 Main_CB_Lookup_S                                 qword               wm_erasebkgnd                                     ; WM_EraseBkgnd
                                                  qword               wm_paint                                          ; WM_Paint
+                                                 qword               wm_size                                           ; WM_Size 
                                                  qword               wm_close                                          ; WM_Close
                                                  qword               wm_destroy                                        ; WM_Destroy
                                                 ;-----------------------------------------------------------------------

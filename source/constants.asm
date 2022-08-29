@@ -13,7 +13,7 @@ buffer_size                                      equ                 1024       
 
 ;-----[C]---------------------------------------------------------------------------------------------------------------
 
-classStyle                                       equ                 CS_VREDRAW OR CS_HREDRAW OR CS_DBLCLKS OR CS_OWNDC OR CS_PARENTDC
+classStyle                                       equ                 cs_vredraw OR cs_hredraw OR cs_dblclks OR cs_owndc OR cs_parentdc
 
 client_height                                    equ                 300                                               ;
 client_width                                     equ                 300                                               ;
