@@ -134,14 +134,16 @@ wait_msg:           xor                 r9, r9                                  
                     ; call                RenderScene                             ; implement software renderer
 
                     xor                 rcx, rcx
-                    ; mov                 rcx, 64
 
                     xor                 rdx, rdx
                     mov                 rdx, render_frame.rfPixels
+
+                    xor                 r8, r8
         drawPixel:
-                    mov                 dword ptr [rdx + rcx * 4], 66336633h
+                    mov                 dword ptr [rdx + rcx * 4], r8d
                     inc                 rcx
-                    cmp                 rcx, 24
+                    inc                 r8
+                    cmp                 rcx, 250000
                     jle                 drawPixel
 
                     xor                 r8, r8
