@@ -85,8 +85,8 @@ main                proc                                                        
 
 ; Register the window class
 
-                    lea                 rcx, wcl                                  ; Set lpWndClass
-                    WinCall             RegisterClassEx, rcx                      ; Register the window class
+                    lea                 rcx, wcl                                    ; Set lpWndClass
+                    WinCall             RegisterClassEx, rcx                        ; Register the window class
 
 ; Create Compat DC
                     xor                 rcx, rcx
@@ -95,56 +95,53 @@ main                proc                                                        
 
 ; Create the main window
 
-                    xor                 r15, r15                                ; Set hWndParent
-                    mov                 r14, 480                                ; Set nHeight
-                    mov                 r13, 640                                ; Set nWidth
-                    mov                 r12, 100                                ; Set y
-                    mov                 r11, 100                                ; Set x
-                    mov                 r9, mw_style                            ; Set dwStyle
-                    ; mov                 r9, 0                                   ; Set dwStyle
-                    lea                 r8, mainName                            ; Set lpWindowName
-                    lea                 rdx, mainClass                          ; Set lpClassName
-                    xor                 rcx, rcx                                ; Set dwExStyle
+                    xor                 r15, r15                                    ; Set hWndParent
+                    mov                 r14, 480                                    ; Set nHeight
+                    mov                 r13, 640                                    ; Set nWidth
+                    mov                 r12, 100                                    ; Set y
+                    mov                 r11, 100                                    ; Set x
+                    mov                 r9, mw_style                                ; Set dwStyle
+                    ; mov                 r9, 0                                     ; Set dwStyle
+                    lea                 r8, mainName                                ; Set lpWindowName
+                    lea                 rdx, mainClass                              ; Set lpClassName
+                    xor                 rcx, rcx                                    ; Set dwExStyle
                     WinCall             CreateWindowEx, rcx, rdx, r8, r9, r11, r12, r13, r14, r15, 0, hInstance, 0
-                    mov                 Main_Handle, rax                        ; Save the main window handle
+                    mov                 Main_Handle, rax                            ; Save the main window handle
 
 ; Ensure main window displayed and updated
 
-                    mov                 rdx, sw_show                            ; Set nCmdShow
-                    mov                 rcx, rax                                ; Set hWnd
-                    WinCall             ShowWindow, rcx, rdx                 ; Display the window
+                    mov                 rdx, sw_show                                ; Set nCmdShow
+                    mov                 rcx, rax                                    ; Set hWnd
+                    WinCall             ShowWindow, rcx, rdx                        ; Display the window
 
-                    mov                 rcx, Main_Handle                        ; Set hWnd
-                    WinCall             UpdateWindow, rcx                    ; Ensure window updated
+                    mov                 rcx, Main_Handle                            ; Set hWnd
+                    WinCall             UpdateWindow, rcx                           ; Ensure window updated
 
 ; Execute the message loop
 
-wait_msg:           xor                 r9, r9                                  ; Set wMsgFilterMax
-                    xor                 r8, r8                                  ; Set wMsgFilterMin
-                    xor                 rdx, rdx                                ; Set hWnd
-                    lea                 rcx, mmsg                               ; Set lpMessage
+wait_msg:           xor                 r9, r9                                      ; Set wMsgFilterMax
+                    xor                 r8, r8                                      ; Set wMsgFilterMin
+                    xor                 rdx, rdx                                    ; Set hWnd
+                    lea                 rcx, mmsg                                   ; Set lpMessage
                     WinCall             PeekMessage, rcx, rdx, r8, r9, pm_remove
 
-                    test                rax, rax                                ; Anything waiting?
-                    jnz                 proc_msg                                ; Yes -- process the message
+                    test                rax, rax                                    ; Anything waiting?
+                    jnz                 proc_msg                                    ; Yes -- process the message
                     ; jz                  breakout
 
-;__________________[Render]_________________________________________________________________________________________
-                    ; call                UpdateScene                             ; implement scene update
-                    ; call                RenderScene                             ; implement software renderer
+;___________________[Render]_________________________________________________________________________________________
+                    ; call                UpdateScene                               ; implement scene update
+                    ; call                RenderScene                               ; implement software renderer
 
-                    xor                 rcx, rcx
+                    xor                 rcx, rcx                                    ; iterator
+                    mov                 rdx, render_frame.rfPixels                  ; addr of pixel
+                    mov                 r8, 250000                                  ; pixel count
 
-                    xor                 rdx, rdx
-                    mov                 rdx, render_frame.rfPixels
-
-                    xor                 r8, r8
         drawPixel:
-                    mov                 dword ptr [rdx + rcx * 4], r8d
-                    inc                 rcx
-                    inc                 r8
-                    cmp                 rcx, 250000
-                    jle                 drawPixel
+                    mov                 dword ptr [rdx + rcx * 4], ecx              ; write into pixel
+                    inc                 rcx                                         ; iterator + 1
+                    cmp                 rcx, r8                                     ; compare regs 
+                    jle                 drawPixel                                   ; is iterator < pixel count
 
                     xor                 r8, r8
                     xor                 rdx, rdx
@@ -153,7 +150,7 @@ wait_msg:           xor                 r9, r9                                  
 
                     mov                 rcx, Main_Handle
                     WinCall             UpdateWindow, rcx
-;__________________[Render]_________________________________________________________________________________________
+;___________________[Render]_________________________________________________________________________________________
 
 
 proc_msg:           lea                 rcx, mmsg                               ; Set lpMessage
