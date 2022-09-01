@@ -30,6 +30,7 @@
 
                     .code
                     include             general.asm                             ; main app logic
+                    include             renderprocs.asm                         ; rendering logic
 
                     option              casemap:none
 main                proc                                                        ; Declare the startup function; this is declared as /entry in the linker command line
@@ -130,18 +131,31 @@ wait_msg:           xor                 r9, r9                                  
                     ; jz                  breakout
 
 ;___________________[Render]_________________________________________________________________________________________
-                    ; call                UpdateScene                               ; implement scene update
-                    ; call                RenderScene                               ; implement software renderer
+;;                    call                UpdateScene                               ; implement scene update
+;;                    call                RenderScene                               ; implement software renderer
 
-                    xor                 rcx, rcx                                    ; iterator
-                    mov                 rdx, render_frame.rfPixels                  ; addr of pixel
-                    mov                 r8, 250000                                  ; pixel count
+; drawPixels
+;                   xor                 rcx, rcx                                    ; iterator
+;                   xor                 rax, rax                                    ; multiplication result
+;                   mov                 eax, render_frame.rfWidth                   ; frame width
+;                   mov                 r8d, render_frame.rfHeight                  ; frame height
+;                   mul                 r8d                                         ; pixel count
+;                   mov                 rdx, render_frame.rfPixels                  ; addr of pixel
+;       drawPixels:
+;                   mov                 dword ptr [rdx + rcx * 4], ecx              ; write into pixel
+;                   inc                 rcx                                         ; iterator + 1
+;                   cmp                 rcx, rax                                    ; compare regs 
+;                   jle                 drawPixels                                  ; is iterator < pixel count
 
-        drawPixel:
-                    mov                 dword ptr [rdx + rcx * 4], ecx              ; write into pixel
-                    inc                 rcx                                         ; iterator + 1
-                    cmp                 rcx, r8                                     ; compare regs 
-                    jle                 drawPixel                                   ; is iterator < pixel count
+; putPixel
+                    xor                 r8, r8
+                    mov                 rcx, 32                                     ; x
+                    mov                 rax, 32                                     ; y
+                    mov                 r8d, render_frame.rfWidth                   ; w
+                    mul                 r8                                          ; y * w
+                    add                 rcx, rax                                    ; x + y * w
+                    mov                 rdx, render_frame.rfPixels                  ; addr of pixels
+                    mov                 dword ptr [rdx + rcx * 4], 00FF00FFh        ; pixels[x + y * w] <- XXRRGGBB
 
                     xor                 r8, r8
                     xor                 rdx, rdx
