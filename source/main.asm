@@ -148,14 +148,20 @@ wait_msg:           xor                 r9, r9                                  
 ;                   jle                 drawPixels                                  ; is iterator < pixel count
 
 ; putPixel
-                    xor                 r8, r8
-                    mov                 rcx, 32                                     ; x
-                    mov                 rax, 32                                     ; y
-                    mov                 r8d, render_frame.rfWidth                   ; w
-                    mul                 r8                                          ; y * w
-                    add                 rcx, rax                                    ; x + y * w
-                    mov                 rdx, render_frame.rfPixels                  ; addr of pixels
-                    mov                 dword ptr [rdx + rcx * 4], 00FF00FFh        ; pixels[x + y * w] <- XXRRGGBB
+;                   xor                 r8, r8
+;                   mov                 rcx, 32                                     ; x
+;                   mov                 rax, 32                                     ; y
+;                   mov                 r8d, render_frame.rfWidth                   ; w
+;                   mul                 r8                                          ; y * w
+;                   add                 rcx, rax                                    ; x + y * w
+;                   mov                 rdx, render_frame.rfPixels                  ; addr of pixels
+;                   mov                 dword ptr [rdx + rcx * 4], 00FF00FFh        ; pixels[x + y * w] <- XXRRGGBB
+
+                    mov                 r8, 32
+                    mov                 rdx, 32
+                    lea                 rcx, render_frame
+                    call                func
+                    ; call                drawPixel
 
                     xor                 r8, r8
                     xor                 rdx, rdx
