@@ -157,12 +157,22 @@ wait_msg:           xor                 r9, r9                                  
 ;                   mov                 rdx, render_frame.rfPixels                  ; addr of pixels
 ;                   mov                 dword ptr [rdx + rcx * 4], 00FF00FFh        ; pixels[x + y * w] <- XXRRGGBB
 
+; drawPixel( rcx: &renderFrame, rdx: posX, r8: posY )
                     mov                 r8, 32
                     mov                 rdx, 32
                     lea                 rcx, render_frame
-                    call                func
-                    ; call                drawPixel
+                    call                drawPixel
 
+; drawRect( rcx: renderFrame, rdx: posX, r8: posY, r9: width, r11: height )
+
+                    mov                 r11, 128
+                    mov                 r9, 128
+                    mov                 r8, 64
+                    mov                 rdx, 64
+                    lea                 rcx, render_frame
+                    call                drawRect
+
+; update frame buffer
                     xor                 r8, r8
                     xor                 rdx, rdx
                     mov                 rcx, Main_Handle
