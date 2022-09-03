@@ -134,43 +134,29 @@ wait_msg:           xor                 r9, r9                                  
 ;;                    call                UpdateScene                               ; implement scene update
 ;;                    call                RenderScene                               ; implement software renderer
 
-; drawPixels
-;                   xor                 rcx, rcx                                    ; iterator
-;                   xor                 rax, rax                                    ; multiplication result
-;                   mov                 eax, render_frame.rfWidth                   ; frame width
-;                   mov                 r8d, render_frame.rfHeight                  ; frame height
-;                   mul                 r8d                                         ; pixel count
-;                   mov                 rdx, render_frame.rfPixels                  ; addr of pixel
-;       drawPixels:
-;                   mov                 dword ptr [rdx + rcx * 4], ecx              ; write into pixel
-;                   inc                 rcx                                         ; iterator + 1
-;                   cmp                 rcx, rax                                    ; compare regs 
-;                   jle                 drawPixels                                  ; is iterator < pixel count
-
-; putPixel
-;                   xor                 r8, r8
-;                   mov                 rcx, 32                                     ; x
-;                   mov                 rax, 32                                     ; y
-;                   mov                 r8d, render_frame.rfWidth                   ; w
-;                   mul                 r8                                          ; y * w
-;                   add                 rcx, rax                                    ; x + y * w
-;                   mov                 rdx, render_frame.rfPixels                  ; addr of pixels
-;                   mov                 dword ptr [rdx + rcx * 4], 00FF00FFh        ; pixels[x + y * w] <- XXRRGGBB
-
 ; drawPixel( rcx: posX, rdx: posY, r8: &renderFrame, r9: color)
-                    mov                 r9, 00FF00FFh                               ; color
-                    lea                 r8, render_frame                            ; framebuffer address
-                    mov                 rdx, 64                                     ; y
-                    mov                 rcx, 32                                     ; x
-                    call                drawPixel
+                    ; mov                 r9d, 00FF0000h                              ; color
+                    ; lea                 r8, render_frame                            ; framebuffer address
+                    ; mov                 edx, 32                                     ; y
+                    ; mov                 ecx, 32                                     ; x
+                    ; call                drawPixel
 
 ; drawLine( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width)
                     mov                 r11, 128                                    ; width
                     mov                 r9, 0000FFFFh                               ; color
                     lea                 r8, render_frame                            ; framebuffer address
                     mov                 rdx, 128                                    ; y
-                    mov                 rcx, 64                                     ; x
+                    mov                 ecx, 64                                     ; x
                     call                drawLine
+
+; drawRect            proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
+                    ; mov                 r12d, 128
+                    ; mov                 r11d, 128
+                    ; mov                 r9d, 00FF0000h                              ; color
+                    ; lea                 r8, render_frame                            ; framebuffer address
+                    ; mov                 edx, 64                                     ; y
+                    ; mov                 ecx, 64                                     ; x
+                    ; call                drawRect
 
 ; update frame buffer
                     xor                 r8, r8
