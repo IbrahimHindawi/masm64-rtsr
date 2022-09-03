@@ -142,22 +142,39 @@ wait_msg:           xor                 r9, r9                                  
                     ; call                drawPixel
 
 ; drawLine( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width)
-                    mov                 r11, 128                                    ; width
-                    mov                 r9, 0000FFFFh                               ; color
-                    lea                 r8, render_frame                            ; framebuffer address
-                    mov                 rdx, 128                                    ; y
-                    mov                 ecx, 64                                     ; x
-                    call                drawLine
+                    ; mov                 r11, 128                                    ; width
+                    ; mov                 r9, 0000FFFFh                               ; color
+                    ; lea                 r8, render_frame                            ; framebuffer address
+                    ; mov                 rdx, 128                                    ; y
+                    ; mov                 ecx, 64                                     ; x
+                    ; call                drawLine
 
 ; drawRect            proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
-                    ; mov                 r12d, 128
-                    ; mov                 r11d, 128
-                    ; mov                 r9d, 00FF0000h                              ; color
-                    ; lea                 r8, render_frame                            ; framebuffer address
-                    ; mov                 edx, 64                                     ; y
-                    ; mov                 ecx, 64                                     ; x
-                    ; call                drawRect
+                    mov                 r12d, 32 
+                    mov                 r11d, 32 
+                    mov                 r9d, 00FF0000h                              ; color
+                    lea                 r8, render_frame                            ; framebuffer address
+                    mov                 edx, 64                                     ; y
+                    mov                 ecx, 64                                     ; x
+                    call                drawRect
 
+; drawRect            proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
+                    mov                 r12d, 32 
+                    mov                 r11d, 32 
+                    mov                 r9d, 0000FF00h                              ; color
+                    lea                 r8, render_frame                            ; framebuffer address
+                    mov                 edx, 64                                     ; y
+                    mov                 ecx, 128                                    ; x
+                    call                drawRect
+
+; drawRect            proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
+                    mov                 r12d, 32 
+                    mov                 r11d, 32 
+                    mov                 r9d, 000000FFh                              ; color
+                    lea                 r8, render_frame                            ; framebuffer address
+                    mov                 edx, 64                                     ; y
+                    mov                 ecx, 192                                    ; x
+                    call                drawRect
 ; update frame buffer
                     xor                 r8, r8
                     xor                 rdx, rdx
