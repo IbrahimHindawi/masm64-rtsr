@@ -157,20 +157,20 @@ wait_msg:           xor                 r9, r9                                  
 ;                   mov                 rdx, render_frame.rfPixels                  ; addr of pixels
 ;                   mov                 dword ptr [rdx + rcx * 4], 00FF00FFh        ; pixels[x + y * w] <- XXRRGGBB
 
-; drawPixel( rcx: &renderFrame, rdx: posX, r8: posY )
-                    mov                 r8, 32
-                    mov                 rdx, 32
-                    lea                 rcx, render_frame
+; drawPixel( rcx: posX, rdx: posY, r8: &renderFrame, r9: color)
+                    mov                 r9, 00FF00FFh                               ; color
+                    lea                 r8, render_frame                            ; framebuffer address
+                    mov                 rdx, 64                                     ; y
+                    mov                 rcx, 32                                     ; x
                     call                drawPixel
 
-; drawRect( rcx: renderFrame, rdx: posX, r8: posY, r9: width, r11: height )
-
-                    mov                 r11, 128
-                    mov                 r9, 128
-                    mov                 r8, 64
-                    mov                 rdx, 64
-                    lea                 rcx, render_frame
-                    call                drawRect
+; drawLine( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width)
+                    mov                 r11, 128                                    ; width
+                    mov                 r9, 0000FFFFh                               ; color
+                    lea                 r8, render_frame                            ; framebuffer address
+                    mov                 rdx, 128                                    ; y
+                    mov                 rcx, 64                                     ; x
+                    call                drawLine
 
 ; update frame buffer
                     xor                 r8, r8
