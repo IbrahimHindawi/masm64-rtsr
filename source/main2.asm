@@ -1,71 +1,204 @@
-;---------------------------------------------------------------------------------------------------------------------------;
-;                                                                                                                           ;
-;           MASM64 Starter Project.                                                                                         ;
-;---------------------------------------------------------------------------------------------------------------------------;
-;                                                                                                                           ;
-;           Writes to the StdOut, then exits safely.                                                                        ;
-;---------------------------------------------------------------------------------------------------------------------------;
+;___________________________________________________________________________________________________________________
+;
+;                  RTSR MASM64: Real-Time Software Rendering in Microsoft Macro Assembler 64-bit
+;
+;__________________[Windows]________________________________________________________________________________________
+                    include             macros.asm                              ;
+                    include             structuredefs.asm                       ;
+                    include             wincons.asm                             ;
 
-;----------[const section]--------------------------------------------------------------------------------------------------;
-                                                .const
-;----------[data section]---------------------------------------------------------------------------------------------------;
-                                                .data
-                                                include                         windows/macros.asm                          ; Macros
-                                                include                         windows/wincons.asm                         ; Windows Constants
-                                                include                         windows/structuredefs.asm                   ; Windows Structures
+                    .data                                                       ;
+                    include             lookups.asm                             ;
+                    include             riid.asm                                ;
+                    include             routers.asm                             ; lookup routers
+                    include             diagnostics.asm                         ; router decl
 
-                                                include                         strings.asm                                 ; User Strings
-                                                include                         constants.asm                               ; User Constants
-                                                include                         variables.asm                               ; User Variables
-;----------[code section]---------------------------------------------------------------------------------------------------;
-                                                .code
-                                                include                         windows/externals.asm                       ; External Functions
+                    .code                                                       ;
+                    include             externals.asm                           ; external proc defs
+                    include             callbacks.asm                           ; callbacks
+                    include             common.asm                              ; lookups
 
-                                                include                         callbacks.asm                               ; User Callbacks
-                                                ; include                         buffers.asm                                 ; User Strings
-                                                ; include                         lookups.asm                                 ; User Lookups
-                                                ; include                         common.asm                                  ; User Callbacks
-                                                ; include                         routers.asm                                 ; User Callbacks
-                                                ; include                         diagnostics.asm                             ; User Callbacks
+;__________________[Program]________________________________________________________________________________________
+                    .const
+                    include             constants.asm                           ;
 
-main                                            proc                                                                        ;
+                    .data
+                    include             structures.asm                          ;
+                    include             buffers.asm                             ;
+                    include             strings.asm                             ;
+                    include             variables.asm                           ; 
 
-                                                local                           holder:qword
-                                                Save_Registers
+                    .code
+                    include             general.asm                             ; main app logic
+                    include             renderprocs.asm                         ; rendering logic
 
-                                                xor                             rcx, rcx
-                                                WinCall                         GetModuleHandle, rcx
-                                                mov                             wnd_hInst, rax
+                    option              casemap:none
+main                proc                                                        ; Declare the startup function; this is declared as /entry in the linker command line
 
-                                                lea                             rcx, wnd
-                                                WinCall                         RegisterClassEx, rcx
+                    local               holder:qword                            ; Required for the WinCall macro
 
-                                                mov                             r14, wnd_hInst                                    ; Set hInstance
+                    xor                 rcx, rcx                                ; The first parameter (NULL) always goes into RCX
+                    WinCall             GetModuleHandle, rcx                 ; 1 parameter is passed to this function
+                    mov                 hInstance, rax                          ; RAX always holds the return value when calling Win32 functions
 
-                                                mov                             r13, 200                                          ; Zero R13
+                    WinCall             GetCommandLine                       ; No parameters on this call
+                    mov                 r8, rax                                 ; Save the command line string pointer
 
-                                                mov                             r12, 200                                          ; Zero R12
+                    lea                 rcx, startup_info                       ; Set lpStartupInfo
+                    WinCall             GetStartupInfo, rcx                  ; Get the startup info
+                    xor                 r9, r9                                  ; Zero all bits of RAX
+                    mov                 r9w, startup_info.wShowWindow           ; Get the incoming nCmdShow
+                    xor                 rdx, rdx                                ; Zero RDX for hPrevInst
+                    mov                 rcx, hInstance                          ; Set hInstance
 
-                                                mov                             rbx, 200                                          ; Zero RBX
+; RCX, RDX, R8, and R9 are now set exactly as they would be on entry to the WinMain function.  WinMain is not
+; used, so the code after this point proceeds exactly as it would inside WinMain.
 
-                                                mov                             r15, 200                            ; Get the work area height
+; Load the cursor image
 
-                                                mov                             r9, main_style
-                                                lea                             r8, main_winname                                  ; Set lpWindowName
-                                                lea                             rdx, main_classname                               ; Set lpClassName
-                                                xor                             rcx, rcx                                          ; Set dwExStyle
-                                                WinCall                         CreateWindowEx, rcx, rdx, r8, r9, rbx, r15, r12, r13, 0, 0, r14, 0
+                    ; xor                 r11, r11                                ; Set cyDesired; uses default if zero: XOR R11 with itself zeroes the register
+                    ; xor                 r9, r9                                  ; Set cxDesired; uses default if zero: XOR R9 with itself zeroes the register
+                    ; mov                 r8, image_cursor                        ; Set uType
+                    ; mov                 rdx, ocr_normal                         ; Set lpszName
+                    ; xor                 rcx, rcx                                ; Set hInstance
+                    ; WinCall         LoadImage, 6, rcx, rdx, r8, r9, r11, lr_cur ; Load the standard cursor
+                    ; mov                 wcl.hCursor, rax                        ; Set wcl.hCursor
 
-                                                mov                             r15, rax
-                                                mov                             rdx, sw_show
-                                                mov                             rcx, rax
-                                                WinCall                         ShowWindow, rcx, rdx
+; Load the large icon
+
+                    ; mov                 r11, 32                                 ; Set cyDesited
+                    ; mov                 r9, 32                                  ; Set cxDesired
+                    ; mov                 r8, image_icon                          ; Set uType
+                    ; lea                 rdx, LargeIconResource                  ; Set lpszName
+                    ; mov                 rcx, hInstance                          ; Set hInstance
+                    ; WinCall         LoadImage, 6, rcx, rdx, r8, r9, r11, lr_cur ; Load the large icon
+                    ; mov                 wcl.hIcon, rax                          ; Set wcl.hIcon
+
+; Load the small icon
+
+                    ; mov                 r11, 32                                 ; Set cyDesited
+                    ; mov                 r9, 32                                  ; Set cxDesired
+                    ; mov                 r8, image_icon                          ; Set uType
+                    ; lea                 rdx, SmallIconResource                  ; Set lpszName
+                    ; mov                 rcx, hInstance                          ; Set hInstance
+                    ; WinCall         LoadImage, 6, rcx, rdx, r8, r9, r11, lr_cur ; Load the large icon
+                    ; mov                 wcl.hIconSm, rax                        ; Set wcl.hIcon
+
+; Register the window class
+
+                    lea                 rcx, wcl                                    ; Set lpWndClass
+                    WinCall             RegisterClassEx, rcx                        ; Register the window class
+
+; Create Compat DC
+                    xor                 rcx, rcx
+                    WinCall             CreateCompatibleDC, rcx
+                    mov                 frame_device_context, rax                       
+
+; Create the main window
+
+                    xor                 r15, r15                                    ; Set hWndParent
+                    mov                 r14, 480                                    ; Set nHeight
+                    mov                 r13, 640                                    ; Set nWidth
+                    mov                 r12, 100                                    ; Set y
+                    mov                 r11, 100                                    ; Set x
+                    mov                 r9, mw_style                                ; Set dwStyle
+                    ; mov                 r9, 0                                     ; Set dwStyle
+                    lea                 r8, mainName                                ; Set lpWindowName
+                    lea                 rdx, mainClass                              ; Set lpClassName
+                    xor                 rcx, rcx                                    ; Set dwExStyle
+                    WinCall             CreateWindowEx, rcx, rdx, r8, r9, r11, r12, r13, r14, r15, 0, hInstance, 0
+                    mov                 Main_Handle, rax                            ; Save the main window handle
+
+; Ensure main window displayed and updated
+
+                    mov                 rdx, sw_show                                ; Set nCmdShow
+                    mov                 rcx, rax                                    ; Set hWnd
+                    WinCall             ShowWindow, rcx, rdx                        ; Display the window
+
+                    mov                 rcx, Main_Handle                            ; Set hWnd
+                    WinCall             UpdateWindow, rcx                           ; Ensure window updated
+
+; Execute the message loop
+
+wait_msg:           xor                 r9, r9                                      ; Set wMsgFilterMax
+                    xor                 r8, r8                                      ; Set wMsgFilterMin
+                    xor                 rdx, rdx                                    ; Set hWnd
+                    lea                 rcx, mmsg                                   ; Set lpMessage
+                    WinCall             PeekMessage, rcx, rdx, r8, r9, pm_remove
+
+                    test                rax, rax                                    ; Anything waiting?
+                    jnz                 proc_msg                                    ; Yes -- process the message
+                    ; jz                  breakout
+
+;___________________[Render]_________________________________________________________________________________________
+;;                    call                UpdateScene                               ; implement scene update
+;;                    call                RenderScene                               ; implement software renderer
+
+; drawPixel( rcx: posX, rdx: posY, r8: &renderFrame, r9: color)
+                    ; mov                 r9d, 00FF0000h                              ; color
+                    ; lea                 r8, render_frame                            ; framebuffer address
+                    ; mov                 edx, 32                                     ; y
+                    ; mov                 ecx, 32                                     ; x
+                    ; call                drawPixel
+
+; drawLine( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width)
+                    ; mov                 r11, 128                                    ; width
+                    ; mov                 r9, 0000FFFFh                               ; color
+                    ; lea                 r8, render_frame                            ; framebuffer address
+                    ; mov                 rdx, 128                                    ; y
+                    ; mov                 ecx, 64                                     ; x
+                    ; call                drawLine
+
+; drawRect            proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
+                    mov                 r12d, 32 
+                    mov                 r11d, 32 
+                    mov                 r9d, 00FF0000h                              ; color
+                    lea                 r8, render_frame                            ; framebuffer address
+                    mov                 edx, 64                                     ; y
+                    mov                 ecx, 64                                     ; x
+                    call                drawRect
+
+; drawRect            proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
+                    mov                 r12d, 32 
+                    mov                 r11d, 32 
+                    mov                 r9d, 0000FF00h                              ; color
+                    lea                 r8, render_frame                            ; framebuffer address
+                    mov                 edx, 64                                     ; y
+                    mov                 ecx, 128                                    ; x
+                    call                drawRect
+
+; drawRect            proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
+                    mov                 r12d, 32 
+                    mov                 r11d, 32 
+                    mov                 r9d, 000000FFh                              ; color
+                    lea                 r8, render_frame                            ; framebuffer address
+                    mov                 edx, 64                                     ; y
+                    mov                 ecx, 192                                    ; x
+                    call                drawRect
+; update frame buffer
+                    xor                 r8, r8
+                    xor                 rdx, rdx
+                    mov                 rcx, Main_Handle
+                    WinCall             InvalidateRect, rcx, rdx, r8
+
+                    mov                 rcx, Main_Handle
+                    WinCall             UpdateWindow, rcx
+;___________________[Render]_________________________________________________________________________________________
 
 
+proc_msg:           lea                 rcx, mmsg                               ; Set lpMessage
+                    WinCall             TranslateMessage, rcx                   ; Translate the message
+
+                    lea                 rcx, mmsg                               ; Set lpMessage
+                    WinCall             DispatchMessage, rcx                    ; Dispatch the message
 
 
-                                                Restore_Registers
+                    jmp                 wait_msg                                ; Reloop for next message
 
-                                                ret
-main                                            endp
-                                                end
+breakout:           xor                 rax, rax                                ; Zero final return – or use the return from WinMain
+
+                    ; call                ExitProcess                              ; causes exception violation for some reason
+                    ret                                                         ; Return to caller
+
+main                endp                                                        ; End of startup procedure
+                    end                                                         ; Declare end of module
