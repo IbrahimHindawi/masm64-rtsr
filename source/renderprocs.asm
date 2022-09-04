@@ -91,3 +91,31 @@ drawRect                                        proc ; ( rcx: posX, rdx: posY, r
                                                 xor                         rax, rax                                    ; exit code
                                                 ret
 drawRect                                        endp
+
+fillBackground                                  proc ; ( r8: &renderFrame, r9d: color )
+
+                                                mov                         ecx, [r8.renderFrame.rfWidth]
+                                                mov                         edx, [r8.renderFrame.rfHeight]
+
+                                                mov                         rax, rcx                                    ; load rax for multiplication
+                                                mul                         rdx                                         ; rdx:rax <- rax * rdx
+                                                mov                         rcx, rax                                    ; store result into rcx
+                                                mov                         rdx, [r8.renderFrame.rfPixels]              ; rdx <- pixelbuffer addr 
+                                                xor                         r8, r8                                      ; zero r8
+
+                                                draw:
+                                                mov                         dword ptr [rdx + r8 * 4], r9d
+                                                inc                         r8
+                                                cmp                         r8, rcx
+                                                jl                          draw
+
+                                                xor                         rax, rax
+                                                ret
+fillBackground                                  endp
+
+
+
+
+
+
+

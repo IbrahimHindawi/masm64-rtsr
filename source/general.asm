@@ -1,8 +1,8 @@
-;________________________________________________________________________________________________________________________
-;                                                                                                                       ;
-;                  RTSR MASM64: Real-Time Software Rendering in Microsoft Macro Assembler 64-bit                        ;
-;                                                                                                                       ;
-;_______________________________________________[General]________________________________________________________________
+;_______________________________________________________________________________________________________________________
+;                                                                                                                      ;
+;                  RTSR MASM64: Real-Time Software Rendering in Microsoft Macro Assembler 64-bit                       ;
+;                                                                                                                      ;
+;_______________________________________________[General]_______________________________________________________________
 
 ;-----------------------------------------------------------------------------------------------------------------------
 ;                                                                                                                      -
@@ -26,7 +26,7 @@ UpdateScene                                      proc                           
 
                                                  Save_Registers                                                        ; Save incoming registers
 
-                                                 ;------[---------------------------------------------------------------
+                                                 ;------[Increment position variable]-----------------------------------
                                                  mov                        ecx, position
                                                  inc                        ecx
                                                  mov                        position, ecx
@@ -44,7 +44,7 @@ UpdateScene                                      proc                           
 
 ;------[Restore incoming registers]-------------------------------------------------------------------------------------
 
-                                                 align                      qword                                             ; Set qword alignment
+                                                 align                      qword                                      ; Set qword alignment
 UpdateScene_Exit:                                Restore_Registers                                                     ; Restore incoming registers
 
 ;------[Return to caller]-----------------------------------------------------------------------------------------------
@@ -67,56 +67,61 @@ UpdateScene                                      endp                           
 ;                                                                                                                      -
 ;-----------------------------------------------------------------------------------------------------------------------
                                                 option casemap: none
-RenderScene                                     proc                                                                  ; Declare function
+RenderScene                                     proc                                                                   ; Declare function
 
 ;------[Local Data]-----------------------------------------------------------------------------------------------------
 
-                                                local                       holder:qword                                      ;
+                                                local                       holder:qword                               ;
 
 ;------[Save incoming registers]----------------------------------------------------------------------------------------
 
-                                                Save_Registers                                                        ; Save incoming registers
+                                                Save_Registers                                                         ; Save incoming registers
 
 ; drawPixel                                     proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color)
-                                                ; mov                       r9d, 00FF0000h                              ; color
-                                                ; lea                       r8, render_frame                            ; framebuffer address
-                                                ; mov                       edx, 32                                     ; y
-                                                ; mov                       ecx, 32                                     ; x
+                                                ; mov                       r9d, 00FF0000h                             ; color
+                                                ; lea                       r8, render_frame                           ; framebuffer address
+                                                ; mov                       edx, 32                                    ; y
+                                                ; mov                       ecx, 32                                    ; x
                                                 ; call                      drawPixel
 
 ; drawLine                                      proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width)
-                                                ; mov                       r11, 128                                    ; width
-                                                ; mov                       r9, 0000FFFFh                               ; color
-                                                ; lea                       r8, render_frame                            ; framebuffer address
-                                                ; mov                       rdx, 128                                    ; y
-                                                ; mov                       ecx, 64                                     ; x
+                                                ; mov                       r11, 128                                   ; width
+                                                ; mov                       r9, 0000FFFFh                              ; color
+                                                ; lea                       r8, render_frame                           ; framebuffer address
+                                                ; mov                       rdx, 128                                   ; y
+                                                ; mov                       ecx, 64                                    ; x
                                                 ; call                      drawLine
 
+; fillBackground                                proc ; ( r8: &renderFrame, r9d: color  )
+                                                mov                         r9d, 00888888h                             ; color
+                                                lea                         r8, render_frame                           ; framebuffer address
+                                                call                        fillBackground
+
 ; drawRect                                      proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
-                                                mov                         r12d, 32 
-                                                mov                         r11d, 32 
-                                                mov                         r9d, 00FF0000h                              ; color
-                                                lea                         r8, render_frame                            ; framebuffer address
-                                                mov                         edx, 64                                     ; y
-                                                mov                         ecx, 64                                     ; x
+                                                mov                         r12d, 32                                   ; h
+                                                mov                         r11d, 32                                   ; w
+                                                mov                         r9d, 00FF0000h                             ; color
+                                                lea                         r8, render_frame                           ; framebuffer address
+                                                mov                         edx, 64                                    ; y
+                                                mov                         ecx, 64                                    ; x
                                                 call                        drawRect
 
 ; drawRect                                      proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
-                                                mov                         r12d, 32 
-                                                mov                         r11d, 32 
-                                                mov                         r9d, 0000FF00h                              ; color
-                                                lea                         r8, render_frame                            ; framebuffer address
-                                                mov                         edx, 64                                     ; y
-                                                mov                         ecx, 128                                    ; x
+                                                mov                         r12d, 32                                   ; h
+                                                mov                         r11d, 32                                   ; w
+                                                mov                         r9d, 0000FF00h                             ; color
+                                                lea                         r8, render_frame                           ; framebuffer address
+                                                mov                         edx, 64                                    ; y
+                                                mov                         ecx, 128                                   ; x
                                                 call                        drawRect
 
 ; drawRect                                      proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
-                                                mov                         r12d, 32 
-                                                mov                         r11d, 32 
-                                                mov                         r9d, 000000FFh                              ; color
-                                                lea                         r8, render_frame                            ; framebuffer address
-                                                mov                         edx, 64                                     ; y
-                                                mov                         ecx, 192                                    ; x
+                                                mov                         r12d, 32                                   ; h
+                                                mov                         r11d, 32                                   ; w
+                                                mov                         r9d, 000000FFh                             ; color
+                                                lea                         r8, render_frame                           ; framebuffer address
+                                                mov                         edx, position                              ; y
+                                                mov                         ecx, 192                                   ; x
                                                 call                        drawRect
 
                                                 ;-----[Update Frame Buffer]--------------------------------------------
@@ -129,18 +134,18 @@ RenderScene                                     proc                            
                                                 WinCall                     UpdateWindow, rcx
 
                                                 ;-----[Zero final return]----------------------------------------------
-                                                xor                 rax, rax                                          ; Zero final return
+                                                xor                 rax, rax                                           ; Zero final return
 
 ;------[Restore incoming registers]-------------------------------------------------------------------------------------
 
-                                                align               qword                                             ; Set qword alignment
-RenderScene_Exit:                               Restore_Registers                                                     ; Restore incoming registers
+                                                align               qword                                              ; Set qword alignment
+RenderScene_Exit:                               Restore_Registers                                                      ; Restore incoming registers
 
 ;------[Return to caller]-----------------------------------------------------------------------------------------------
 
-                                                ret                                                                   ; Return to caller
+                                                ret                                                                    ; Return to caller
 
-RenderScene                                     endp                                                                  ; End function
+RenderScene                                     endp                                                                   ; End function
 
 
 
@@ -157,72 +162,72 @@ RenderScene                                     endp                            
 ;                                                                                                                      -
 ;-----------------------------------------------------------------------------------------------------------------------
 
-RunMessageLoop                                  proc                                                                  ; Declare function
+RunMessageLoop                                  proc                                                                   ; Declare function
 
 ;------[Local Data]-----------------------------------------------------------------------------------------------------
 
-                                                local               holder:qword                                      ;
-                                                local               msg_data:msg                                      ;
+                                                local               holder:qword                                      
+                                                local               msg_data:msg                                     
 
 ;------[Save incoming registers]----------------------------------------------------------------------------------------
 
-                                                Save_Registers                                                        ; Save incoming registers
+                                                Save_Registers                                                         ; Save incoming registers
 
                                                 ;-----[Get the next message]-------------------------------------------
 
-RunMessageLoop_00001:                           xor                 r9, r9                                            ; Set wMsgFilterMax
-                                                xor                 r8, r8                                            ; Set wMsgFilterMin
-                                                xor                 rdx, rdx                                          ; Set hWnd
-                                                lea                 rcx, msg_data                                     ; Set lpMsg
-                                                WinCall             PeekMessage, rcx, rdx, r8, r9, pm_remove          ; Peek for next message
+RunMessageLoop_00001:                           xor                 r9, r9                                             ; Set wMsgFilterMax
+                                                xor                 r8, r8                                             ; Set wMsgFilterMin
+                                                xor                 rdx, rdx                                           ; Set hWnd
+                                                lea                 rcx, msg_data                                      ; Set lpMsg
+                                                WinCall             PeekMessage, rcx, rdx, r8, r9, pm_remove           ; Peek for next message
 
                                                 ;-----[Branch if no messages]------------------------------------------
 
-                                                test                rax, rax                                          ; Anything available?
-                                                jz                  RunMessageLoop_00003                              ; No - render scene
+                                                test                rax, rax                                           ; Anything available?
+                                                jz                  RunMessageLoop_00003                               ; No - render scene
 
                                                 ;-----[Branch if not WM_Quit]------------------------------------------
 
-                                                cmp                 msg_data.message, wm_quit                         ; WM_Quit?
-                                                jnz                 RunMessageLoop_00002                              ; No - continue process
+                                                cmp                 msg_data.message, wm_quit                          ; WM_Quit?
+                                                jnz                 RunMessageLoop_00002                               ; No - continue process
 
                                                 ;-----[Send the message manually]--------------------------------------
 
-                                                xor                 r9, r9                                            ; Set lParam
-                                                xor                 r8, r8                                            ; Set wParam
-                                                mov                 rdx, wm_quit                                      ; Set uMsg
-                                                mov                 rcx, Main_Handle                                  ; Set hWnd
-                                                WinCall             SendMessage, rcx, rdx, r8, r9                     ; Execute call
+                                                xor                 r9, r9                                             ; Set lParam
+                                                xor                 r8, r8                                             ; Set wParam
+                                                mov                 rdx, wm_quit                                       ; Set uMsg
+                                                mov                 rcx, Main_Handle                                   ; Set hWnd
+                                                WinCall             SendMessage, rcx, rdx, r8, r9                      ; Execute call
 
                                                 ;-----[Exit the function]----------------------------------------------
 
-                                                xor                 rax, rax                                          ; Zero final return
-                                                jmp                 RunMessageLoop_Exit                               ; Exit function
+                                                xor                 rax, rax                                           ; Zero final return
+                                                jmp                 RunMessageLoop_Exit                                ; Exit function
 
                                                 ;-----[Translate the message]------------------------------------------
 
-RunMessageLoop_00002:                           lea                 rcx, msg_data                                     ; Set lpMsg
-                                                WinCall             TranslateMessage, rcx                             ; Execute call
+RunMessageLoop_00002:                           lea                 rcx, msg_data                                      ; Set lpMsg
+                                                WinCall             TranslateMessage, rcx                              ; Execute call
 
                                                 ;-----[Dispatch the message]-------------------------------------------
 
-                                                lea                 rcx, msg_data                                     ; Set lpMsg
-                                                WinCall             DispatchMessage, rcx                              ; Execute call
+                                                lea                 rcx, msg_data                                      ; Set lpMsg
+                                                WinCall             DispatchMessage, rcx                               ; Execute call
 
                                                 ;-----[Check for next message]-----------------------------------------
 
-                                                jmp                 RunMessageLoop_00001                              ; Reloop for next check
+                                                jmp                 RunMessageLoop_00001                               ; Reloop for next check
 
 
 RunMessageLoop_00003:                           
                                                 ;-----[Process input]--------------------------------------------------
-;                                               LocalCall           ProcessInput                                      ; Process user input
+;                                               LocalCall           ProcessInput                                       ; Process user input
 
                                                 ;-----[Update the scene]-----------------------------------------------
-                                                LocalCall           UpdateScene                                       ; Update the scene
+                                                LocalCall           UpdateScene                                        ; Update the scene
 
                                                 ;-----[Render the scene]-----------------------------------------------
-                                                LocalCall           RenderScene                                       ; Render the scene
+                                                LocalCall           RenderScene                                        ; Render the scene
 
                                                 ;-----[Check for next message]-----------------------------------------
 
