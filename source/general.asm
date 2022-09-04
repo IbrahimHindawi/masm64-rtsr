@@ -2,7 +2,7 @@
 ;                                                                                                                       ;
 ;                  RTSR MASM64: Real-Time Software Rendering in Microsoft Macro Assembler 64-bit                        ;
 ;                                                                                                                       ;
-;_______________________________________________[Windows]________________________________________________________________
+;_______________________________________________[General]________________________________________________________________
 
 ;-----------------------------------------------------------------------------------------------------------------------
 ;                                                                                                                      -
@@ -20,13 +20,16 @@ UpdateScene                                      proc                           
 
 ;------[Local Data]-----------------------------------------------------------------------------------------------------
 
-                                                 local               holder:qword                                      ;
+                                                 local                      holder:qword                                      ;
 
 ;------[Save incoming registers]----------------------------------------------------------------------------------------
 
                                                  Save_Registers                                                        ; Save incoming registers
 
                                                  ;------[---------------------------------------------------------------
+                                                 mov                        ecx, position
+                                                 inc                        ecx
+                                                 mov                        position, ecx
                                                  ;------[---------------------------------------------------------------
                                                  ;------[---------------------------------------------------------------
                                                  ;------[---------------------------------------------------------------
@@ -41,7 +44,7 @@ UpdateScene                                      proc                           
 
 ;------[Restore incoming registers]-------------------------------------------------------------------------------------
 
-                                                 align               qword                                             ; Set qword alignment
+                                                 align                      qword                                             ; Set qword alignment
 UpdateScene_Exit:                                Restore_Registers                                                     ; Restore incoming registers
 
 ;------[Return to caller]-----------------------------------------------------------------------------------------------
@@ -210,12 +213,15 @@ RunMessageLoop_00002:                           lea                 rcx, msg_dat
 
                                                 jmp                 RunMessageLoop_00001                              ; Reloop for next check
 
-                                                ;-----[Update the scene]-----------------------------------------------
 
-RunMessageLoop_00003:                           ; LocalCall           UpdateScene                                       ; Execute call
+RunMessageLoop_00003:                           
+                                                ;-----[Process input]--------------------------------------------------
+;                                               LocalCall           ProcessInput                                      ; Process user input
+
+                                                ;-----[Update the scene]-----------------------------------------------
+                                                LocalCall           UpdateScene                                       ; Update the scene
 
                                                 ;-----[Render the scene]-----------------------------------------------
-
                                                 LocalCall           RenderScene                                       ; Render the scene
 
                                                 ;-----[Check for next message]-----------------------------------------

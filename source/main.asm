@@ -2,7 +2,7 @@
 ;                                                                                                                       ;
 ;       RTSR MASM64: Real-Time Software Rendering in Microsoft Macro Assembler 64-bit                                   ;
 ;                                                                                                                       ;
-;_______________________[Windows]_______________________________________________________________________________________;
+;_______________________________________________[Windows]_______________________________________________________________;
                                                 include                     macros.asm                                  ; macros
                                                 include                     structuredefs.asm                           ; windows structure definitions
                                                 include                     wincons.asm                                 ; windows constants
@@ -17,7 +17,7 @@
                                                 include                     externals.asm                               ; external proc defs
                                                 include                     callbacks.asm                               ; callbacks
                                                 include                     common.asm                                  ; lookups
-;_______________________[Program]_______________________________________________________________________________________;
+;_______________________________________________[Program]_______________________________________________________________;
                                                 .const
                                                 include                     constants.asm                               ; program constants
 
@@ -30,8 +30,20 @@
                                                 .code
                                                 include                     general.asm                                 ; main app logic
                                                 include                     renderprocs.asm                             ; rendering logic
-;_______________________[Entry-Point]___________________________________________________________________________________;
+;_______________________________________________[Entry-Point]___________________________________________________________;
                                                 option                      casemap:none                                ; case sensitive                                 
+;-----------------------------------------------------------------------------------------------------------------------
+;                                                                                                                      -
+; main                                                                                                                 -
+;                                                                                                                      -
+;-----------------------------------------------------------------------------------------------------------------------
+;                                                                                                                      -
+; In:  <No Parameters>                                                                                                 -
+;                                                                                                                      -
+; This function is the main entry point to the program.                                                                -
+;                                                                                                                      -
+;-----------------------------------------------------------------------------------------------------------------------
+
 main                                            proc                                                                    ; main proc
                                                 local                       holder:qword                                ; local variable required for WinCall macro
                                                 call                        SetupMainWindow                             ; create window
