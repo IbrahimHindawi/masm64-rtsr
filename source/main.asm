@@ -1,8 +1,8 @@
-;________________________________________________________________________________________________________________________
+;_______________________________________________________________________________________________________________________;
 ;                                                                                                                       ;
-;                  RTSR MASM64: Real-Time Software Rendering in Microsoft Macro Assembler 64-bit                        ;
+;       RTSR MASM64: Real-Time Software Rendering in Microsoft Macro Assembler 64-bit                                   ;
 ;                                                                                                                       ;
-;_______________________________________________[Windows]________________________________________________________________
+;_______________________[Windows]_______________________________________________________________________________________;
                                                 include                     macros.asm                                  ; macros
                                                 include                     structuredefs.asm                           ; windows structure definitions
                                                 include                     wincons.asm                                 ; windows constants
@@ -17,7 +17,7 @@
                                                 include                     externals.asm                               ; external proc defs
                                                 include                     callbacks.asm                               ; callbacks
                                                 include                     common.asm                                  ; lookups
-;_______________________________________________[Program]________________________________________________________________
+;_______________________[Program]_______________________________________________________________________________________;
                                                 .const
                                                 include                     constants.asm                               ; program constants
 
@@ -30,7 +30,7 @@
                                                 .code
                                                 include                     general.asm                                 ; main app logic
                                                 include                     renderprocs.asm                             ; rendering logic
-;_______________________________________________[Entry-Point]____________________________________________________________
+;_______________________[Entry-Point]___________________________________________________________________________________;
                                                 option                      casemap:none                                ; case sensitive                                 
 main                                            proc                                                                    ; main proc
                                                 local                       holder:qword                                ; local variable required for WinCall macro
