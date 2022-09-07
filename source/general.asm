@@ -27,9 +27,12 @@ UpdateScene                                      proc                           
                                                  Save_Registers                                                        ; Save incoming registers
 
                                                  ;------[Increment position variable]-----------------------------------
-                                                 mov                        ecx, position
-                                                 inc                        ecx
-                                                 mov                        position, ecx
+;                                                mov                        ecx, position.vector3.x
+;                                                inc                        ecx
+;                                                mov                        position.vector3.x, ecx
+                                                 movss                      xmm0, position.vector3.x
+                                                 addss                      xmm0, distance
+                                                 movss                      position.vector3.x, xmm0
                                                  ;------[---------------------------------------------------------------
                                                  ;------[---------------------------------------------------------------
                                                  ;------[---------------------------------------------------------------
@@ -93,18 +96,9 @@ RenderScene                                     proc                            
                                                 ; call                      drawLine
 
 ; fillBackground                                proc ; ( r8: &renderFrame, r9d: color  )
-                                                mov                         r9d, 00888888h                             ; color
+                                                mov                         r9d, 00222222h                             ; color
                                                 lea                         r8, render_frame                           ; framebuffer address
                                                 call                        fillBackground
-
-; drawRect                                      proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
-                                                mov                         r12d, 32                                   ; h
-                                                mov                         r11d, 32                                   ; w
-                                                mov                         r9d, 00FF0000h                             ; color
-                                                lea                         r8, render_frame                           ; framebuffer address
-                                                mov                         edx, 64                                    ; y
-                                                mov                         ecx, 64                                    ; x
-                                                call                        drawRect
 
 ; drawRect                                      proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
                                                 mov                         r12d, 32                                   ; h
@@ -112,16 +106,8 @@ RenderScene                                     proc                            
                                                 mov                         r9d, 0000FF00h                             ; color
                                                 lea                         r8, render_frame                           ; framebuffer address
                                                 mov                         edx, 64                                    ; y
-                                                mov                         ecx, 128                                   ; x
-                                                call                        drawRect
-
-; drawRect                                      proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
-                                                mov                         r12d, 32                                   ; h
-                                                mov                         r11d, 32                                   ; w
-                                                mov                         r9d, 000000FFh                             ; color
-                                                lea                         r8, render_frame                           ; framebuffer address
-                                                mov                         edx, position                              ; y
-                                                mov                         ecx, 192                                   ; x
+                                                cvttss2si                   ecx, position.vector3.x
+;                                               mov                         ecx, position.vector3.x                    ; x
                                                 call                        drawRect
 
                                                 ;-----[Update Frame Buffer]--------------------------------------------

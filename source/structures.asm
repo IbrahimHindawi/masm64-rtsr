@@ -81,7 +81,10 @@
 ;                                                  dword               D3D11_INPUT_PER_VERTEX_DATA                       ; InputSlotClass
 ;                                                  dword               0                                                 ; InstanceDataStepRate
 ;                                                 ;-----------------------------------------------------------------------
-layout_E                                         label               byte                                              ; End of array marker
+position                                        vector3             <>
+distance                                        real4               0.01 
+
+layout_E                                        label               byte                                              ; End of array marker
 
 ;-----[M]---------------------------------------------------------------------------------------------------------------
 
@@ -234,5 +237,4 @@ rcPaint                                         rect                {}
 fRestore                                        dword               ?
 fIncUpdate                                      dword               ?
 rgbReserved                                     byte                32 dup(?)
-
 
