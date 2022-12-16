@@ -8,7 +8,6 @@
                                                 ;static
                                                 include                     structs.asm
                                                 .data
-                                                include                     buffers.asm                                 ; program buffers
                                                 include                     strings.asm                                 ; program strings
                                                 include                     variables.asm                               ; program variables
                                                 .code

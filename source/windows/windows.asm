@@ -16,6 +16,7 @@
                                                 include                     constants.asm                                           ; program constants
 ;----------[data section]-----------------------------------------------------------------------------------------------------------;
                                                 .data                       
+                                                include                     buffers.asm                                             ; program buffers
                                                 include                     lookups.asm                                             ; event look up table
                                                 include                     riid.asm                                                ; routing identifiers
                                                 include                     routers.asm                                             ; lookup routers
