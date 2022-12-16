@@ -7,15 +7,15 @@
 ;-----------------------------------------------------------------------------------------------------------------------------------;
                                                 ifndef Windows_asm                                                                  ; header guard
                                                 Windows_asm = 0                                                                     ; header guard variable
-
+;-----------------------------------------------------------------------------------------------------------------------------------;
                                                 include                     macros.asm                                              ; macros
                                                 include                     structuredefs.asm                                       ; windows structure definitions
                                                 include                     wincons.asm                                             ; windows constants
 ;----------[const section]----------------------------------------------------------------------------------------------------------;
-                                                .const
+                                                .const                                                                              ;
                                                 include                     constants.asm                                           ; program constants
 ;----------[data section]-----------------------------------------------------------------------------------------------------------;
-                                                .data                       
+                                                .data                                                                               ;
                                                 include                     buffers.asm                                             ; program buffers
                                                 include                     lookups.asm                                             ; event look up table
                                                 include                     riid.asm                                                ; routing identifiers
@@ -23,9 +23,8 @@
                                                 include                     diagnostics.asm                                         ; router decl
                                                 include                     structures.asm                                          ; windows structure variables
 ;----------[code section]-----------------------------------------------------------------------------------------------------------;
-                                                .code                       
+                                                .code                                                                               ;
                                                 include                     externals.asm                                           ; windows external procedure definitions
-
+;-----------------------------------------------------------------------------------------------------------------------------------;
                                                 endif                                                                               ; header guard end
-
-
+;-----------------------------------------------------------------------------------------------------------------------------------;
