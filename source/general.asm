@@ -3,57 +3,56 @@
 ;                  RTSR MASM64: Real-Time Software Rendering in Microsoft Macro Assembler 64-bit                                    ;
 ;                                                                                                                                   ;
 ;-----------------------------------------------------------------------------------------------------------------------------------;
-;-----------------------------------------------------------------------------------------------------------------------
-;                                                                                                                      -
-; UpdateScene                                                                                                          -
-;                                                                                                                      -
-;-----------------------------------------------------------------------------------------------------------------------
-;                                                                                                                      -
-; In:  <No Parameters>                                                                                                 -
-;                                                                                                                      -
-; This function updates the scene geometry and performes any other per-render updates required.                        -
-;                                                                                                                      -
-;-----------------------------------------------------------------------------------------------------------------------
+;                                                                                                                                   -
+; UpdateScene                                                                                                                       -
+;                                                                                                                                   -
+;------------------------------------------------------------------------------------------------------------------------------------
+;                                                                                                                                   -
+; In:  <No Parameters>                                                                                                              -
+;                                                                                                                                   -
+; This function updates the scene geometry and performes any other per-render updates required.                                     -
+;                                                                                                                                   -
+;------------------------------------------------------------------------------------------------------------------------------------
 
-UpdateScene                                      proc                                                                  ; Declare function
+UpdateScene                                      proc                                                                               ; Declare function
 
-;------[Local Data]-----------------------------------------------------------------------------------------------------
+;------[Local Data]------------------------------------------------------------------------------------------------------------------
 
-                                                 local                      holder:qword                                      ;
+                                                 local                      holder:qword                                            ;
 
-;------[Save incoming registers]----------------------------------------------------------------------------------------
+;------[Save incoming registers]-----------------------------------------------------------------------------------------------------
 
-                                                 Save_Registers                                                        ; Save incoming registers
+                                                 Save_Registers                                                                     ; Save incoming registers
 
-                                                 ;------[Increment position variable]-----------------------------------
+                                                 ;------[Increment position variable]------------------------------------------------
 ;                                                mov                        ecx, position.vector3.x
 ;                                                inc                        ecx
 ;                                                mov                        position.vector3.x, ecx
                                                  movss                      xmm0, position.vector3.x
                                                  addss                      xmm0, distance
                                                  movss                      position.vector3.x, xmm0
-                                                 ;------[---------------------------------------------------------------
-                                                 ;------[---------------------------------------------------------------
-                                                 ;------[---------------------------------------------------------------
-                                                 ;------[---------------------------------------------------------------
-                                                 ;------[---------------------------------------------------------------
-                                                 ;------[---------------------------------------------------------------
-                                                 ;------[---------------------------------------------------------------
-                                                 ;------[---------------------------------------------------------------
-                                                 ;------[---------------------------------------------------------------
-                                                 ;------[---------------------------------------------------------------
-                                                 ;------[---------------------------------------------------------------
+                                                 ;------[----------------------------------------------------------------------------
+                                                 ;------[----------------------------------------------------------------------------
+                                                 ;------[----------------------------------------------------------------------------
+                                                 ;------[----------------------------------------------------------------------------
+                                                 ;------[----------------------------------------------------------------------------
+                                                 ;------[----------------------------------------------------------------------------
+                                                 ;------[----------------------------------------------------------------------------
+                                                 ;------[----------------------------------------------------------------------------
+                                                 ;------[----------------------------------------------------------------------------
+                                                 ;------[----------------------------------------------------------------------------
+                                                 ;------[----------------------------------------------------------------------------
 
-;------[Restore incoming registers]-------------------------------------------------------------------------------------
+;------[Restore incoming registers]--------------------------------------------------------------------------------------------------
 
-                                                 align                      qword                                      ; Set qword alignment
-UpdateScene_Exit:                                Restore_Registers                                                     ; Restore incoming registers
+                                                 align                      qword                                                   ; Set qword alignment
+UpdateScene_Exit:                                Restore_Registers                                                                  ; Restore incoming registers
 
-;------[Return to caller]-----------------------------------------------------------------------------------------------
+;------[Return to caller]------------------------------------------------------------------------------------------------------------
 
-                                                 ret                                                                   ; Return to caller
+                                                 ret                                                                                ; Return to caller
 
-UpdateScene                                      endp                                                                  ; End function
+UpdateScene                                      endp                                                                               ; End function
 
 
 
@@ -77,39 +76,61 @@ RenderScene                                     proc                            
 
 ;------[Save incoming registers]----------------------------------------------------------------------------------------
 
-                                                Save_Registers                                                         ; Save incoming registers
+                                                Save_Registers                                                                          ; Save incoming registers
 
 ; drawPixel                                     proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color)
-                                                ; mov                       r9d, 00FF0000h                             ; color
-                                                ; lea                       r8, render_frame                           ; framebuffer address
-                                                ; mov                       edx, 32                                    ; y
-                                                ; mov                       ecx, 32                                    ; x
+                                                ; mov                       r9d, 00FF0000h                                              ; color
+                                                ; lea                       r8, render_frame                                            ; framebuffer address
+                                                ; mov                       edx, 32                                                     ; y
+                                                ; mov                       ecx, 32                                                     ; x
                                                 ; call                      drawPixel
 
 ; drawLine                                      proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width)
-                                                ; mov                       r11, 128                                   ; width
-                                                ; mov                       r9, 0000FFFFh                              ; color
-                                                ; lea                       r8, render_frame                           ; framebuffer address
-                                                ; mov                       rdx, 128                                   ; y
-                                                ; mov                       ecx, 64                                    ; x
+                                                ; mov                       r11, 128                                                    ; width
+                                                ; mov                       r9, 0000FFFFh                                               ; color
+                                                ; lea                       r8, render_frame                                            ; framebuffer address
+                                                ; mov                       rdx, 128                                                    ; y
+                                                ; mov                       ecx, 64                                                     ; x
                                                 ; call                      drawLine
 
 ; fillBackground                                proc ; ( r8: &renderFrame, r9d: color  )
-                                                mov                         r9d, 00222222h                             ; color
-                                                lea                         r8, render_frame                           ; framebuffer address
+                                                mov                         r9d, 00222222h                                              ; color
+                                                lea                         r8, render_frame                                            ; framebuffer address
                                                 call                        fillBackground
 
-; drawRect                                      proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width, r12: height)
-                                                mov                         r12d, 32                                   ; h
-                                                mov                         r11d, 32                                   ; w
-                                                mov                         r9d, 0000FF00h                             ; color
-                                                lea                         r8, render_frame                           ; framebuffer address
-                                                mov                         edx, 64                                    ; y
+                                                ;----[Draw Rect]-------------------------------------------------------------------------
+                                                mov                         r12d, 32                                                    ; h
+                                                mov                         r11d, 32                                                    ; w
+                                                mov                         r9d, 0000FF00h                                              ; color
+                                                lea                         r8, render_frame                                            ; framebuffer address
+                                                mov                         edx, 64                                                     ; y
                                                 cvttss2si                   ecx, position.vector3.x
-;                                               mov                         ecx, position.vector3.x                    ; x
+;                                               mov                         ecx, position.vector3.x                                     ; x
                                                 call                        drawRect
 
-                                                ;-----[Update Frame Buffer]--------------------------------------------
+                                                ;----[Draw Grid Vectors]-----------------------------------------------------------------
+                                                lea                         rax, tov
+                                                xor                         rcx, rcx                                                                
+
+                                                drawgrid:
+                                                push                        rcx
+                                                push                        rax
+                                                mov                         r12d, 4                                                     ; h
+                                                mov                         r11d, 4                                                     ; w
+                                                mov                         r9d, 000000FFh                                              ; color
+                                                lea                         r8, render_frame                                            ; framebuffer address
+                                                cvttss2si                   edx, [rax].vector2.x
+                                                cvttss2si                   ecx, [rax].vector2.y
+                                                call                        drawRect
+                                                pop                         rax
+                                                pop                         rcx
+
+                                                add                         rax, sizeof vector3
+                                                inc                         rcx
+                                                cmp                         rcx, lentov
+                                                jl                          drawgrid
+
+                                                ;-----[Update Frame Buffer]--------------------------------------------------------------
                                                 xor                         r8, r8
                                                 xor                         rdx, rdx
                                                 mov                         rcx, Main_Handle
@@ -245,29 +266,32 @@ RunMessageLoop                                  endp                            
 ;                                                                                                                      -
 ;-----------------------------------------------------------------------------------------------------------------------
 
-SetupMainWindow                                 proc                                                                  ; Declare function
+SetupMainWindow                                 proc                                                                                    ; Declare function
 
 ;------[Local Data]-----------------------------------------------------------------------------------------------------
 
-                                                local               holder:qword                                      ;
+                                                local               holder:qword                                                        ;
 
 ;------[Save incoming registers]----------------------------------------------------------------------------------------
 
-                                                Save_Registers                                                        ; Save incoming registers
+                                                Save_Registers                                                                          ; Save incoming registers
 
-                                                xor                 rcx, rcx                                ; The first parameter (NULL) always goes into RCX
-                                                WinCall             GetModuleHandle, rcx                 ; 1 parameter is passed to this function
-                                                mov                 hInstance, rax                          ; RAX always holds the return value when calling Win32 functions
+                                                ;----[Setup Grid]------------------------------------------------------------------------
+                                                call                gengrid
 
-                                                WinCall             GetCommandLine                       ; No parameters on this call
-                                                mov                 r8, rax                                 ; Save the command line string pointer
+                                                xor                 rcx, rcx                                                            ; The first parameter (NULL) always goes into RCX
+                                                WinCall             GetModuleHandle, rcx                                                ; 1 parameter is passed to this function
+                                                mov                 hInstance, rax                                                      ; RAX always holds the return value when calling Win32 functions
 
-                                                lea                 rcx, startup_info                       ; Set lpStartupInfo
-                                                WinCall             GetStartupInfo, rcx                  ; Get the startup info
-                                                xor                 r9, r9                                  ; Zero all bits of RAX
-                                                mov                 r9w, startup_info.wShowWindow           ; Get the incoming nCmdShow
-                                                xor                 rdx, rdx                                ; Zero RDX for hPrevInst
-                                                mov                 rcx, hInstance                          ; Set hInstance
+                                                WinCall             GetCommandLine                                                      ; No parameters on this call
+                                                mov                 r8, rax                                                             ; Save the command line string pointer
+
+                                                lea                 rcx, startup_info                                                   ; Set lpStartupInfo
+                                                WinCall             GetStartupInfo, rcx                                                 ; Get the startup info
+                                                xor                 r9, r9                                                              ; Zero all bits of RAX
+                                                mov                 r9w, startup_info.wShowWindow                                       ; Get the incoming nCmdShow
+                                                xor                 rdx, rdx                                                            ; Zero RDX for hPrevInst
+                                                mov                 rcx, hInstance                                                      ; Set hInstance
 
 ; RCX, RDX, R8, and R9 are now set exactly as they would be on entry to the WinMain function.  WinMain is not
 ; used, so the code after this point proceeds exactly as it would inside WinMain.

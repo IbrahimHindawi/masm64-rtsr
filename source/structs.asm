@@ -8,18 +8,6 @@
                                                 ifndef Structs_asm                                                                  ; header guard
                                                 Structs_asm = 0                                                                     ; header guard variable
 
-vector2                                         struct                                                                              ; Declare structure
-                                               ;-------------------------------------------------------------------------------------
-x                                               real4               ?                                                               ;
-y                                               real4               ?                                                               ;
-vector2                                         ends                                                                                ; End structure declaration
-
-vector3                                         struct                                                                              ; Declare structure
-                                               ;-------------------------------------------------------------------------------------
-x                                               real4               ?                                                               ; x
-y                                               real4               ?                                                               ; y
-z                                               real4               ?                                                               ; z
-vector3                                         ends                                                                                ; End structure declaration
 ;----------[const section]----------------------------------------------------------------------------------------------------------;
                                                 .const
 ;----------[data section]-----------------------------------------------------------------------------------------------------------;
