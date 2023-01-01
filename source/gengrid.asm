@@ -7,22 +7,25 @@
 ;           if the flat array index counter is divisible by the dimension count without a                                               ;
 ;           remainder then it is the start of a row in a 2d matrix.                                                                     ;
 ;---------------------------------------------------------------------------------------------------------------------------------------;
-                                                 include                    maths.asm
+                                                include                    maths.asm
 
-                                                 movss                      position.vector3.x, xmm0
+                                                movss                      position.vector3.x, xmm0
 ;----------[const section]--------------------------------------------------------------------------------------------------------------;
 .const                                                                                                                                  ;
-dimension_1d                                     equ                        9                                                           ;
-dimension_2d                                     equ                        dimension_1d * dimension_1d                                 ;
-dimension_3d                                     equ                        dimension_1d * dimension_1d * dimension_1d                  ;
+dimension_1d                                    equ                        9                                                            ;
+dimension_2d                                    equ                        dimension_1d * dimension_1d                                  ;
+dimension_3d                                    equ                        dimension_1d * dimension_1d * dimension_1d                   ;
 ;----------[data section]---------------------------------------------------------------------------------------------------------------;
 .data                                                                                                                                   ;
-zero                                             real4                       0.0                                                        ;
-startval                                         real4                      -1.0                                                        ; first value of the row
-incr                                             real4                       0.25                                                       ; incremental displacement
-mult                                             real4                       50.0                                                       ; scalar multiplier
-disp                                             real4                       200.0                                                      ; scalar multiplier
+zero                                            real4                       0.0                                                         ;
+startval                                        real4                      -1.0                                                         ; first value of the row
+incr                                            real4                       0.25                                                        ; incremental displacement
 
+mult                                            real4                       50.0                                                        ; scalar multiplier
+disp                                            real4                       200.0                                                       ; scalar multiplier
+
+field_of_view                                   real4                       20.0  
+                                                    
                                                  align 16
 aov                                              vector3                    dimension_2d * sizeof vector3 dup({})                       ; static memory allocation for array of vectors
 sizeaov                                          =                          ( $ - aov ) / sizeof vector3                                ; compute size of array in bytes

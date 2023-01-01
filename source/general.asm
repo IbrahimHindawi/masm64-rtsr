@@ -32,14 +32,14 @@ UpdateScene                                      proc                           
                                                  addss                      xmm0, distance
                                                  movss                      position.vector3.x, xmm0
 
-                                                 ;------[2d Projection]--------------------------------------------------------------
-                                                 movss                      xmm0, mult
+                                                 ;------[Projection]----------------------------------------------------------------------
+                                                 movss                      xmm0, field_of_view
                                                  lea                        r8, tov_proj
                                                  lea                        rdx, tov
                                                  mov                        rcx, lentov
                                                  call                       projection
 
-                                                 ;----[Multiply]--------------------------------------------------------------------------
+                                                 ;----[Screen displacement]---------------------------------------------------------------
                                                  lea                         rax, tov_proj
                                                  xor                         rcx, rcx                                                                
 
@@ -149,9 +149,9 @@ RenderScene                                     proc                            
                                                 pop                         rax
                                                 pop                         rcx
 
-                                                add                         rax, sizeof vector3
+                                                add                         rax, sizeof vector2
                                                 inc                         rcx
-                                                cmp                         rcx, lentov
+                                                cmp                         rcx, lentov_proj
                                                 jl                          drawgrid
 
                                                 ;-----[Update Frame Buffer]--------------------------------------------------------------
