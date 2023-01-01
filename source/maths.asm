@@ -34,6 +34,40 @@ vector4                                         ends                            
                                                 .data                       
 ;----------[code section]-----------------------------------------------------------------------------------------------------------;
                                                 .code                       
+;----------[procedure]------------------------------------------------------------------------------------------------------------------;
+;           projection                                                                                                                  ;
+;----------[parameters]-----------------------------------------------------------------------------------------------------------------;
+;           rcx  length of array                                                                                                        ;
+;           rdx  source 3d array                                                                                                        ;
+;           r8   destination 2d array                                                                                                   ;
+;           xmm0 field of view                                                                                                          ;
+;---------------------------------------------------------------------------------------------------------------------------------------;
+projection                                      proc
+
+                                                mov                 r9, rcx                                                             ; save length
+                                                xor                 rcx, rcx                                                            ; reset counter
+
+                                                projloop:
+                                                movss               xmm1, [rdx].vector3.x
+                                                movss               xmm2, [rdx].vector3.z
+                                                mulss               xmm1, xmm0
+                                                divss               xmm1, xmm2
+                                                movss               [r8].vector2.x, xmm1
+
+                                                movss               xmm1, [rdx].vector3.y
+                                                movss               xmm2, [rdx].vector3.z
+                                                mulss               xmm1, xmm0
+                                                divss               xmm1, xmm2
+                                                movss               [r8].vector2.y, xmm1
+
+                                                add                 rdx, sizeof vector3
+                                                add                 r8, sizeof vector2
+                                                inc                 rcx
+                                                cmp                 rcx, r9
+                                                jl                  projloop
+
+                                                ret
+projection                                      endp
 
                                                 endif                                                                               ; header guard end
 

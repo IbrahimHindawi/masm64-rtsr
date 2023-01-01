@@ -31,7 +31,31 @@ UpdateScene                                      proc                           
                                                  movss                      xmm0, position.vector3.x
                                                  addss                      xmm0, distance
                                                  movss                      position.vector3.x, xmm0
-                                                 ;------[----------------------------------------------------------------------------
+
+                                                 ;------[2d Projection]--------------------------------------------------------------
+                                                 movss                      xmm0, mult
+                                                 lea                        r8, tov_proj
+                                                 lea                        rdx, tov
+                                                 mov                        rcx, lentov
+                                                 call                       projection
+
+                                                 ;----[Multiply]--------------------------------------------------------------------------
+                                                 lea                         rax, tov_proj
+                                                 xor                         rcx, rcx                                                                
+
+                                                 gridmult:
+                                                 movss                       xmm0, [rax].vector2.x
+                                                 addss                       xmm0, disp
+                                                 movss                       [rax].vector2.x, xmm0
+                                                 movss                       xmm0, [rax].vector2.y
+                                                 addss                       xmm0, disp
+                                                 movss                       [rax].vector2.y, xmm0
+
+                                                 add                         rax, sizeof vector2
+                                                 inc                         rcx
+                                                 cmp                         rcx, lentov_proj
+                                                 jl                          gridmult
+
                                                  ;------[----------------------------------------------------------------------------
                                                  ;------[----------------------------------------------------------------------------
                                                  ;------[----------------------------------------------------------------------------
@@ -57,43 +81,43 @@ UpdateScene                                      endp                           
 
 
 
-;-----------------------------------------------------------------------------------------------------------------------
-;                                                                                                                      -
-; RenderScene                                                                                                          -
-;                                                                                                                      -
-;-----------------------------------------------------------------------------------------------------------------------
-;                                                                                                                      -
-; In:  <No Parameters>                                                                                                 -
-;                                                                                                                      -
-;                                                                                                                      -
-;-----------------------------------------------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------------------------------------------------------------
+;                                                                                                                                       ;
+; RenderScene                                                                                                                           ;
+;                                                                                                                                       ;
+;----------------------------------------------------------------------------------------------------------------------------------------
+;                                                                                                                                       ;
+; In:  <No Parameters>                                                                                                                  ;
+;                                                                                                                                       ;
+;                                                                                                                                       ;
+;----------------------------------------------------------------------------------------------------------------------------------------
                                                 option casemap: none
-RenderScene                                     proc                                                                   ; Declare function
+RenderScene                                     proc                                                                                    ; Declare function
 
-;------[Local Data]-----------------------------------------------------------------------------------------------------
+;------[Local Data]----------------------------------------------------------------------------------------------------------------------
 
-                                                local                       holder:qword                               ;
+                                                local                       holder:qword                                                ;
 
-;------[Save incoming registers]----------------------------------------------------------------------------------------
+;------[Save incoming registers]---------------------------------------------------------------------------------------------------------
 
                                                 Save_Registers                                                                          ; Save incoming registers
 
-; drawPixel                                     proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color)
-                                                ; mov                       r9d, 00FF0000h                                              ; color
-                                                ; lea                       r8, render_frame                                            ; framebuffer address
-                                                ; mov                       edx, 32                                                     ; y
-                                                ; mov                       ecx, 32                                                     ; x
-                                                ; call                      drawPixel
+                                                ;----[Draw Pixel]------------------------------------------------------------------------
+;                                               mov                       r9d, 00FF0000h                                                ; color
+;                                               lea                       r8, render_frame                                              ; framebuffer address
+;                                               mov                       edx, 32                                                       ; y
+;                                               mov                       ecx, 32                                                       ; x
+;                                               call                      drawPixel
 
-; drawLine                                      proc ; ( rcx: posX, rdx: posY, r8: &renderFrame, r9: color, r11: width)
-                                                ; mov                       r11, 128                                                    ; width
-                                                ; mov                       r9, 0000FFFFh                                               ; color
-                                                ; lea                       r8, render_frame                                            ; framebuffer address
-                                                ; mov                       rdx, 128                                                    ; y
-                                                ; mov                       ecx, 64                                                     ; x
-                                                ; call                      drawLine
+                                                ;----[Draw Line]-------------------------------------------------------------------------
+;                                               mov                       r11, 128                                                      ; width
+;                                               mov                       r9, 0000FFFFh                                                 ; color
+;                                               lea                       r8, render_frame                                              ; framebuffer address
+;                                               mov                       rdx, 128                                                      ; y
+;                                               mov                       ecx, 64                                                       ; x
+;                                               call                      drawLine
 
-; fillBackground                                proc ; ( r8: &renderFrame, r9d: color  )
+                                                ;----[Fill Background]-------------------------------------------------------------------
                                                 mov                         r9d, 00222222h                                              ; color
                                                 lea                         r8, render_frame                                            ; framebuffer address
                                                 call                        fillBackground
@@ -109,7 +133,7 @@ RenderScene                                     proc                            
                                                 call                        drawRect
 
                                                 ;----[Draw Grid Vectors]-----------------------------------------------------------------
-                                                lea                         rax, tov
+                                                lea                         rax, tov_proj
                                                 xor                         rcx, rcx                                                                
 
                                                 drawgrid:
@@ -139,19 +163,19 @@ RenderScene                                     proc                            
                                                 mov                         rcx, Main_Handle
                                                 WinCall                     UpdateWindow, rcx
 
-                                                ;-----[Zero final return]----------------------------------------------
-                                                xor                 rax, rax                                           ; Zero final return
+                                                ;-----[Zero final return]----------------------------------------------------------------
+                                                xor                 rax, rax                                                            ; Zero final return
 
-;------[Restore incoming registers]-------------------------------------------------------------------------------------
+;------[Restore incoming registers]------------------------------------------------------------------------------------------------------
 
-                                                align               qword                                              ; Set qword alignment
-RenderScene_Exit:                               Restore_Registers                                                      ; Restore incoming registers
+                                                align                       qword                                                       ; Set qword alignment
+RenderScene_Exit:                               Restore_Registers                                                                       ; Restore incoming registers
 
-;------[Return to caller]-----------------------------------------------------------------------------------------------
+;------[Return to caller]----------------------------------------------------------------------------------------------------------------
 
-                                                ret                                                                    ; Return to caller
+                                                ret                                                                                     ; Return to caller
 
-RenderScene                                     endp                                                                   ; End function
+RenderScene                                     endp                                                                                    ; End function
 
 
 
