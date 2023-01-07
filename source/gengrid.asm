@@ -9,8 +9,7 @@
 ;---------------------------------------------------------------------------------------------------------------------------------------;
                                                 include                    maths.asm
 
-                                                movss                      position.vector3.x, xmm0
-;----------[const section]--------------------------------------------------------------------------------------------------------------;
+                                                ;----------[const section]--------------------------------------------------------------------------------------------------------------;
 .const                                                                                                                                  ;
 dimension_1d                                    equ                        9                                                            ;
 dimension_2d                                    equ                        dimension_1d * dimension_1d                                  ;
@@ -24,7 +23,7 @@ incr                                            real4                       0.25
 mult                                            real4                       50.0                                                        ; scalar multiplier
 disp                                            real4                       200.0                                                       ; scalar multiplier
 
-field_of_view                                   real4                       20.0  
+field_of_view                                   real4                       100.0  
                                                     
                                                  align 16
 aov                                              vector3                    dimension_2d * sizeof vector3 dup({})                       ; static memory allocation for array of vectors
@@ -35,6 +34,9 @@ lenaov                                           =                          dime
 tov                                              vector3                    dimension_3d * sizeof vector3 dup({})                       ; static memory allocation for tensor of vectors
 sizetov                                          =                          ( $ - tov ) / sizeof vector3                                ; compute size of tensor in bytes
 lentov                                           =                          dimension_3d                                                ; element count
+
+tov_render                                       vector3                    dimension_3d * sizeof vector3 dup({})                       ; static memory allocation for tensor of vectors
+
                                                  align 16
 tov_proj                                         vector2                    dimension_3d * sizeof vector2 dup({})                       ; static memory allocation for tensor of vectors
 sizetov_proj                                     =                          ( $ - tov_proj ) / sizeof vector2                           ; compute size of tensor in bytes

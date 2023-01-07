@@ -7,6 +7,12 @@
 ;-----------------------------------------------------------------------------------------------------------------------------------;
                                                 ifndef Maths_asm                                                                    ; header guard
                                                 Maths_asm = 0                                                                       ; header guard variable
+;-----------------------------------------------------------------------------------------------------------------------------------;
+pi                                              real4               3.141592356589                                                  ; pi
+sinofhalfpi                                     real4               0.8660254
+cosofhalfpi                                     real4               0.5
+degtorad                                        real4               0.0174532925                                                    ; degrees to radians: pi / 180
+half                                            real4               180.0                                                           ; half a revolution
 
 vector2                                         struct                                                                              ; Declare structure
                                                ;-------------------------------------------------------------------------------------
@@ -32,6 +38,8 @@ vector4                                         ends                            
                                                 .const
 ;----------[data section]-----------------------------------------------------------------------------------------------------------;
                                                 .data                       
+tempcos                                         real4               ?
+tempsin                                         real4               ?
 ;----------[code section]-----------------------------------------------------------------------------------------------------------;
                                                 .code                       
 ;----------[procedure]--------------------------------------------------------------------------------------------------------------;
@@ -69,6 +77,64 @@ projection                                      proc
                                                 ret
 projection                                      endp
 
-                                                endif                                                                               ; header guard end
 
-                                                
+;----------[procedure]--------------------------------------------------------------------------------------------------------------;
+;           vector3rotatex                                                                                                          ;
+;----------[parameters]-------------------------------------------------------------------------------------------------------------;
+;           rax  address of vector                                                                                                  ;
+;           xmm0 angle                                                                                                              ;
+;-----------------------------------------------------------------------------------------------------------------------------------;
+vector3_rotate_x                                proc
+;                                               x
+;                                               y * cos(angle) - z * sin(angle)
+;                                               y * sin(angle) + z * cos(angle)
+;                                               convert from degrees to radians
+                                                movss               xmm1, degtorad
+                                                mulss               xmm0, xmm1
+                                                movss               tempcos, xmm0
+                                                movss               tempsin, xmm0
+;                                               cos(angle)
+                                                fld                 tempcos
+                                                fcos
+                                                fst                 tempcos
+;                                               fstp                st(0)
+                                                movss               xmm1, tempcos
+                                                movss               xmm1, cosofhalfpi
+;                                               sin(angle)
+                                                fld                 tempsin
+                                                fsin
+                                                fst                 tempsin
+;                                               fstp                st(0)
+                                                movss               xmm2, tempsin
+                                                movss               xmm2, sinofhalfpi
+;                                               load y & z
+                                                movss               xmm3, [rax].vector3.y
+                                                movss               xmm4, [rax].vector3.z
+;                                               copy x
+                                                movss               xmm7, [rax].vector3.x
+                                                movss               [rbx].vector3.x, xmm7
+;                                               calculate y
+                                                xorps               xmm5, xmm5
+                                                xorps               xmm6, xmm6
+                                                movss               xmm5, xmm3                                      ; y
+                                                mulss               xmm5, xmm1                                      ; y * cos(angle)
+                                                movss               xmm6, xmm4                                      ; z
+                                                mulss               xmm6, xmm2                                      ; z * sin(angle)
+                                                subss               xmm5, xmm6
+                                                movss               [rbx].vector3.y, xmm5
+;                                               calculate z
+                                                xorps               xmm5, xmm5
+                                                xorps               xmm6, xmm6
+                                                movss               xmm5, xmm3                                      ; y
+                                                mulss               xmm5, xmm2                                      ; y * sin(angle)
+                                                movss               xmm6, xmm4                                      ; z
+                                                mulss               xmm6, xmm1                                      ; z * cos(angle)
+                                                addss               xmm5, xmm6
+                                                movss               [rbx].vector3.z, xmm5
+                                                ret
+vector3_rotate_x                                endp
+
+;-----------------------------------------------------------------------------------------------------------------------------------;
+                                                endif                                                                               ; header guard end
+;-----------------------------------------------------------------------------------------------------------------------------------;
+

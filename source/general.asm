@@ -14,69 +14,94 @@
 ;                                                                                                                                   -
 ;------------------------------------------------------------------------------------------------------------------------------------
 
-UpdateScene                                      proc                                                                               ; Declare function
+UpdateScene                                     proc                                                                               ; Declare function
 
 ;------[Local Data]------------------------------------------------------------------------------------------------------------------
 
-                                                 local                      holder:qword                                            ;
+                                                local                      holder:qword                                            ;
 
 ;------[Save incoming registers]-----------------------------------------------------------------------------------------------------
 
-                                                 Save_Registers                                                                     ; Save incoming registers
+                                                Save_Registers                                                                     ; Save incoming registers
 
-                                                 ;------[Increment position variable]------------------------------------------------
-;                                                mov                        ecx, position.vector3.x
-;                                                inc                        ecx
-;                                                mov                        position.vector3.x, ecx
-                                                 movss                      xmm0, position.vector3.x
-                                                 addss                      xmm0, distance
-                                                 movss                      position.vector3.x, xmm0
+                                                ;------[Increment position variable]------------------------------------------------
+;                                               mov                        ecx, position.vector3.x
+;                                               inc                        ecx
+;                                               mov                        position.vector3.x, ecx
+                                                movss                      xmm0, position.vector3.x
+                                                addss                      xmm0, distance
+                                                movss                      position.vector3.x, xmm0
 
-                                                 ;------[Projection]----------------------------------------------------------------------
-                                                 movss                      xmm0, field_of_view
-                                                 lea                        r8, tov_proj
-                                                 lea                        rdx, tov
-                                                 mov                        rcx, lentov
-                                                 call                       projection
 
-                                                 ;----[Screen displacement]---------------------------------------------------------------
-                                                 lea                         rax, tov_proj
-                                                 xor                         rcx, rcx                                                                
+                                                ;------[Rotate X]-------------------------------------------------------------------
+                                                lea                         rax, tov
+                                                lea                         rbx, tov_render
+                                                xor                         rcx, rcx                                                                
 
-                                                 gridmult:
-                                                 movss                       xmm0, [rax].vector2.x
-                                                 addss                       xmm0, disp
-                                                 movss                       [rax].vector2.x, xmm0
-                                                 movss                       xmm0, [rax].vector2.y
-                                                 addss                       xmm0, disp
-                                                 movss                       [rax].vector2.y, xmm0
+                                                rotateloop:
+                                                movss                       xmm0, angle
+                                                call                        vector3_rotate_x
 
-                                                 add                         rax, sizeof vector2
-                                                 inc                         rcx
-                                                 cmp                         rcx, lentov_proj
-                                                 jl                          gridmult
+                                                movss                       xmm1, [rbx].vector3.z
+                                                addss                       xmm1, camera.vector3.z
+                                                movss                       [rbx].vector3.z, xmm1
 
-                                                 ;------[----------------------------------------------------------------------------
-                                                 ;------[----------------------------------------------------------------------------
-                                                 ;------[----------------------------------------------------------------------------
-                                                 ;------[----------------------------------------------------------------------------
-                                                 ;------[----------------------------------------------------------------------------
-                                                 ;------[----------------------------------------------------------------------------
-                                                 ;------[----------------------------------------------------------------------------
-                                                 ;------[----------------------------------------------------------------------------
-                                                 ;------[----------------------------------------------------------------------------
-                                                 ;------[----------------------------------------------------------------------------
+                                                add                         rax, sizeof vector3
+                                                add                         rbx, sizeof vector3
+                                                inc                         rcx
+                                                cmp                         rcx, lentov
+                                                jl                          rotateloop
+
+                                                ;------[Projection]----------------------------------------------------------------------
+                                                movss                      xmm0, field_of_view
+                                                lea                        r8, tov_proj
+                                                lea                        rdx, tov_render
+                                                mov                        rcx, lentov
+                                                call                       projection
+
+                                                ;----[Screen displacement]---------------------------------------------------------------
+                                                lea                         rax, tov_proj
+                                                xor                         rcx, rcx                                                                
+
+                                                gridmult:
+                                                movss                       xmm0, [rax].vector2.x
+                                                addss                       xmm0, disp
+                                                movss                       [rax].vector2.x, xmm0
+                                                movss                       xmm0, [rax].vector2.y
+                                                addss                       xmm0, disp
+                                                movss                       [rax].vector2.y, xmm0
+
+                                                add                         rax, sizeof vector2
+                                                inc                         rcx
+                                                cmp                         rcx, lentov_proj
+                                                jl                          gridmult
+
+                                                movss                       xmm0, angle
+                                                addss                       xmm0, angleinc
+                                                movss                       angle, xmm0
+
+
+                                                ;------[----------------------------------------------------------------------------
+                                                ;------[----------------------------------------------------------------------------
+                                                ;------[----------------------------------------------------------------------------
+                                                ;------[----------------------------------------------------------------------------
+                                                ;------[----------------------------------------------------------------------------
+                                                ;------[----------------------------------------------------------------------------
+                                                ;------[----------------------------------------------------------------------------
+                                                ;------[----------------------------------------------------------------------------
+                                                ;------[----------------------------------------------------------------------------
+                                                ;------[----------------------------------------------------------------------------
 
 ;------[Restore incoming registers]--------------------------------------------------------------------------------------------------
 
-                                                 align                      qword                                                   ; Set qword alignment
-UpdateScene_Exit:                                Restore_Registers                                                                  ; Restore incoming registers
+                                                align                      qword                                                   ; Set qword alignment
+UpdateScene_Exit:                               Restore_Registers                                                                  ; Restore incoming registers
 
 ;------[Return to caller]------------------------------------------------------------------------------------------------------------
 
-                                                 ret                                                                                ; Return to caller
+                                                ret                                                                                ; Return to caller
 
-UpdateScene                                      endp                                                                               ; End function
+UpdateScene                                     endp                                                                               ; End function
 
 
 
@@ -132,15 +157,15 @@ RenderScene                                     proc                            
 ;                                               mov                         ecx, position.vector3.x                                     ; x
                                                 call                        drawRect
 
-                                                ;----[Draw Grid Vectors]-----------------------------------------------------------------
+                                                ;----[Draw Tensor of Vectors]------------------------------------------------------------
                                                 lea                         rax, tov_proj
                                                 xor                         rcx, rcx                                                                
 
                                                 drawgrid:
                                                 push                        rcx
                                                 push                        rax
-                                                mov                         r12d, 4                                                     ; h
-                                                mov                         r11d, 4                                                     ; w
+                                                mov                         r12d, 2                                                     ; h
+                                                mov                         r11d, 2                                                     ; w
                                                 mov                         r9d, 000000FFh                                              ; color
                                                 lea                         r8, render_frame                                            ; framebuffer address
                                                 cvttss2si                   edx, [rax].vector2.x
@@ -301,7 +326,7 @@ SetupMainWindow                                 proc                            
                                                 Save_Registers                                                                          ; Save incoming registers
 
                                                 ;----[Setup Grid]------------------------------------------------------------------------
-                                                call                gengrid
+                                                call                gengrid                                                             ; generate the 3d tensor grid
 
                                                 xor                 rcx, rcx                                                            ; The first parameter (NULL) always goes into RCX
                                                 WinCall             GetModuleHandle, rcx                                                ; 1 parameter is passed to this function
