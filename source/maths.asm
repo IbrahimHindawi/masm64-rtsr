@@ -40,6 +40,7 @@ vector4                                         ends                            
                                                 .data                       
 tempcos                                         real4               ?
 tempsin                                         real4               ?
+junk                                            real4               0.0
 ;----------[code section]-----------------------------------------------------------------------------------------------------------;
                                                 .code                       
 ;----------[procedure]--------------------------------------------------------------------------------------------------------------;
@@ -97,16 +98,16 @@ vector3_rotate_x                                proc
                                                 fld                 tempcos
                                                 fcos
                                                 fst                 tempcos
-;                                               fstp                st(0)
+                                                fstp                st(0)
                                                 movss               xmm1, tempcos
-                                                movss               xmm1, cosofhalfpi
+                                                ;movss               xmm1, cosofhalfpi
 ;                                               sin(angle)
                                                 fld                 tempsin
                                                 fsin
                                                 fst                 tempsin
-;                                               fstp                st(0)
+                                                fstp                st(0)
                                                 movss               xmm2, tempsin
-                                                movss               xmm2, sinofhalfpi
+                                                ;movss               xmm2, sinofhalfpi
 ;                                               load y & z
                                                 movss               xmm3, [rax].vector3.y
                                                 movss               xmm4, [rax].vector3.z
