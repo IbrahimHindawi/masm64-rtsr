@@ -164,8 +164,8 @@ RenderScene                                     proc                            
                                                 drawgrid:
                                                 push                        rcx
                                                 push                        rax
-                                                mov                         r12d, 4                                                     ; h
-                                                mov                         r11d, 4                                                     ; w
+                                                mov                         r12d, 3                                                     ; h
+                                                mov                         r11d, 3                                                     ; w
                                                 mov                         r9d, 00FF0000h                                              ; color
                                                 lea                         r8, render_frame                                            ; framebuffer address
                                                 cvttss2si                   edx, [rax].vector2.x
