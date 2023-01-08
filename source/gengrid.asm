@@ -9,38 +9,39 @@
 ;---------------------------------------------------------------------------------------------------------------------------------------;
                                                 include                    maths.asm
 
-                                                ;----------[const section]--------------------------------------------------------------------------------------------------------------;
+;----------[const section]--------------------------------------------------------------------------------------------------------------;
 .const                                                                                                                                  ;
-dimension_1d                                    equ                        9                                                            ;
+dimension_1d                                    equ                        12                                                           ;
 dimension_2d                                    equ                        dimension_1d * dimension_1d                                  ;
 dimension_3d                                    equ                        dimension_1d * dimension_1d * dimension_1d                   ;
 ;----------[data section]---------------------------------------------------------------------------------------------------------------;
 .data                                                                                                                                   ;
 zero                                            real4                       0.0                                                         ;
+one                                             real4                       1.0                                                         ;
+two                                             real4                       2.0                                                         ;
 startval                                        real4                      -1.0                                                         ; first value of the row
-incr                                            real4                       0.25                                                        ; incremental displacement
+incr                                            real4                       ?                                                       ; incremental displacement
 
 mult                                            real4                       50.0                                                        ; scalar multiplier
 disp                                            real4                       200.0                                                       ; scalar multiplier
 
-field_of_view                                   real4                       100.0  
-                                                    
-                                                 align 16
-aov                                              vector3                    dimension_2d * sizeof vector3 dup({})                       ; static memory allocation for array of vectors
-sizeaov                                          =                          ( $ - aov ) / sizeof vector3                                ; compute size of array in bytes
-lenaov                                           =                          dimension_2d                                                ; element count
+                                                align 16
+aov                                             vector3                    dimension_2d * sizeof vector3 dup({})                       ; static memory allocation for array of vectors
+sizeaov                                         =                          ( $ - aov ) / sizeof vector3                                ; compute size of array in bytes
+lenaov                                          =                          dimension_2d                                                ; element count
 
-                                                 align 16
-tov                                              vector3                    dimension_3d * sizeof vector3 dup({})                       ; static memory allocation for tensor of vectors
-sizetov                                          =                          ( $ - tov ) / sizeof vector3                                ; compute size of tensor in bytes
-lentov                                           =                          dimension_3d                                                ; element count
+                                                align 16
+tov                                             vector3                    dimension_3d * sizeof vector3 dup({})                       ; static memory allocation for tensor of vectors
+sizetov                                         =                          ( $ - tov ) / sizeof vector3                                ; compute size of tensor in bytes
+lentov                                          =                          dimension_3d                                                ; element count
 
-tov_render                                       vector3                    dimension_3d * sizeof vector3 dup({})                       ; static memory allocation for tensor of vectors
+                                                align 16
+tov_render                                      vector3                    dimension_3d * sizeof vector3 dup({})                       ; static memory allocation for tensor of vectors
 
-                                                 align 16
-tov_proj                                         vector2                    dimension_3d * sizeof vector2 dup({})                       ; static memory allocation for tensor of vectors
-sizetov_proj                                     =                          ( $ - tov_proj ) / sizeof vector2                           ; compute size of tensor in bytes
-lentov_proj                                      =                          dimension_3d                                                ; element count
+                                                align 16
+tov_proj                                        vector2                    dimension_3d * sizeof vector2 dup({})                       ; static memory allocation for tensor of vectors
+sizetov_proj                                    =                          ( $ - tov_proj ) / sizeof vector2                           ; compute size of tensor in bytes
+lentov_proj                                     =                          dimension_3d                                                ; element count
 ;----------[code section]---------------------------------------------------------------------------------------------------------------;
 .code
 
@@ -137,6 +138,16 @@ gengrid                                         proc
 ;                                               movss                       xmm2, incr
 ;                                               movss                       xmm3, zero
 ;                                               call                        gen2dgrid
+
+                                                ;----[Compute Grid Increment]------------------------------------------------------------
+                                                ; increment = 1 / (dimension_1d / 2)
+                                                movss                       xmm0, two
+                                                mov                         rax, dimension_1d
+                                                cvtsi2ss                    xmm1, rax
+                                                divss                       xmm1, xmm0
+                                                movss                       xmm0, one
+                                                divss                       xmm0, xmm1
+                                                movss                       incr, xmm0
 
                                                 ;----[Setup Grid]------------------------------------------------------------------------
                                                 lea                         r10, tov
