@@ -11,7 +11,7 @@
 
 ;----------[const section]--------------------------------------------------------------------------------------------------------------;
 .const                                                                                                                                  ;
-dimension_1d                                    equ                        12                                                           ;
+dimension_1d                                    equ                        6                                                            ;
 dimension_2d                                    equ                        dimension_1d * dimension_1d                                  ;
 dimension_3d                                    equ                        dimension_1d * dimension_1d * dimension_1d                   ;
 ;----------[data section]---------------------------------------------------------------------------------------------------------------;
