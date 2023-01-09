@@ -8,12 +8,6 @@
                                                 ifndef Maths_asm                                                                    ; header guard
                                                 Maths_asm = 0                                                                       ; header guard variable
 ;-----------------------------------------------------------------------------------------------------------------------------------;
-pi                                              real4               3.141592356589                                                  ; pi
-sinofhalfpi                                     real4               0.8660254
-cosofhalfpi                                     real4               0.5
-degtorad                                        real4               0.0174532925                                                    ; degrees to radians: pi / 180
-half                                            real4               180.0                                                           ; half a revolution
-
 vector2                                         struct                                                                              ; Declare structure
                                                ;-------------------------------------------------------------------------------------
 x                                               real4               ?                                                               ; x
@@ -36,8 +30,16 @@ w                                               real4               ?           
 vector4                                         ends                                                                                ; End structure declaration
 ;----------[const section]----------------------------------------------------------------------------------------------------------;
                                                 .const
+                                                align 4
+pi                                              real4               3.141592356589                                                  ; pi
+sinofhalfpi                                     real4               0.8660254
+cosofhalfpi                                     real4               0.5
+degtorad                                        real4               0.0174532925                                                    ; degrees to radians: pi / 180
+half                                            real4               180.0                                                           ; half a revolution
+
 ;----------[data section]-----------------------------------------------------------------------------------------------------------;
                                                 .data                       
+                                                align 4
 tempcos                                         real4               ?
 tempsin                                         real4               ?
 junk                                            real4               0.0
@@ -117,19 +119,19 @@ vector3_rotate_x                                proc
 ;                                               calculate y
                                                 xorps               xmm5, xmm5
                                                 xorps               xmm6, xmm6
-                                                movss               xmm5, xmm3                                      ; y
-                                                mulss               xmm5, xmm1                                      ; y * cos(angle)
-                                                movss               xmm6, xmm4                                      ; z
-                                                mulss               xmm6, xmm2                                      ; z * sin(angle)
+                                                movss               xmm5, xmm3                                                      ; y
+                                                mulss               xmm5, xmm1                                                      ; y * cos(angle)
+                                                movss               xmm6, xmm4                                                      ; z
+                                                mulss               xmm6, xmm2                                                      ; z * sin(angle)
                                                 subss               xmm5, xmm6
                                                 movss               [rbx].vector3.y, xmm5
 ;                                               calculate z
                                                 xorps               xmm5, xmm5
                                                 xorps               xmm6, xmm6
-                                                movss               xmm5, xmm3                                      ; y
-                                                mulss               xmm5, xmm2                                      ; y * sin(angle)
-                                                movss               xmm6, xmm4                                      ; z
-                                                mulss               xmm6, xmm1                                      ; z * cos(angle)
+                                                movss               xmm5, xmm3                                                      ; y
+                                                mulss               xmm5, xmm2                                                      ; y * sin(angle)
+                                                movss               xmm6, xmm4                                                      ; z
+                                                mulss               xmm6, xmm1                                                      ; z * cos(angle)
                                                 addss               xmm5, xmm6
                                                 movss               [rbx].vector3.z, xmm5
                                                 ret

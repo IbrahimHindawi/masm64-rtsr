@@ -7,41 +7,45 @@
 ;           if the flat array index counter is divisible by the dimension count without a                                               ;
 ;           remainder then it is the start of a row in a 2d matrix.                                                                     ;
 ;---------------------------------------------------------------------------------------------------------------------------------------;
+                                                ifndef gengrid_asm                                                                      ; header guard
+                                                gengrid_asm = 0                                                                         ; header guard variable
+;---------------------------------------------------------------------------------------------------------------------------------------;
                                                 include                    maths.asm
 
 ;----------[const section]--------------------------------------------------------------------------------------------------------------;
 .const                                                                                                                                  ;
-dimension_1d                                    equ                        6                                                            ;
+dimension_1d                                    equ                        8                                                            ;
 dimension_2d                                    equ                        dimension_1d * dimension_1d                                  ;
 dimension_3d                                    equ                        dimension_1d * dimension_1d * dimension_1d                   ;
 ;----------[data section]---------------------------------------------------------------------------------------------------------------;
 .data                                                                                                                                   ;
+                                                align 4
 zero                                            real4                       0.0                                                         ;
 one                                             real4                       1.0                                                         ;
 two                                             real4                       2.0                                                         ;
 startval                                        real4                      -1.0                                                         ; first value of the row
-incr                                            real4                       ?                                                       ; incremental displacement
+incr                                            real4                       ?                                                           ; incremental displacement
 
 mult                                            real4                       50.0                                                        ; scalar multiplier
 disp                                            real4                       200.0                                                       ; scalar multiplier
 
                                                 align 16
-aov                                             vector3                    dimension_2d * sizeof vector3 dup({})                       ; static memory allocation for array of vectors
-sizeaov                                         =                          ( $ - aov ) / sizeof vector3                                ; compute size of array in bytes
-lenaov                                          =                          dimension_2d                                                ; element count
+aov                                             vector3                    dimension_2d * sizeof vector3 dup({})                        ; static memory allocation for array of vectors
+sizeaov                                         =                          ( $ - aov ) / sizeof vector3                                 ; compute size of array in bytes
+lenaov                                          =                          dimension_2d                                                 ; element count
 
                                                 align 16
-tov                                             vector3                    dimension_3d * sizeof vector3 dup({})                       ; static memory allocation for tensor of vectors
-sizetov                                         =                          ( $ - tov ) / sizeof vector3                                ; compute size of tensor in bytes
-lentov                                          =                          dimension_3d                                                ; element count
+tov                                             vector3                    dimension_3d * sizeof vector3 dup({})                        ; static memory allocation for tensor of vectors
+sizetov                                         =                          ( $ - tov ) / sizeof vector3                                 ; compute size of tensor in bytes
+lentov                                          =                          dimension_3d                                                 ; element count
 
                                                 align 16
-tov_render                                      vector3                    dimension_3d * sizeof vector3 dup({})                       ; static memory allocation for tensor of vectors
+tov_render                                      vector3                    dimension_3d * sizeof vector3 dup({})                        ; static memory allocation for tensor of vectors
 
                                                 align 16
-tov_proj                                        vector2                    dimension_3d * sizeof vector2 dup({})                       ; static memory allocation for tensor of vectors
-sizetov_proj                                    =                          ( $ - tov_proj ) / sizeof vector2                           ; compute size of tensor in bytes
-lentov_proj                                     =                          dimension_3d                                                ; element count
+tov_proj                                        vector2                    dimension_3d * sizeof vector2 dup({})                        ; static memory allocation for tensor of vectors
+sizetov_proj                                    =                          ( $ - tov_proj ) / sizeof vector2                            ; compute size of tensor in bytes
+lentov_proj                                     =                          dimension_3d                                                 ; element count
 ;----------[code section]---------------------------------------------------------------------------------------------------------------;
 .code
 
@@ -125,7 +129,7 @@ gen3dgrid                                       proc
 gen3dgrid                                       endp
 
 ;----------[procedure]------------------------------------------------------------------------------------------------------------------;
-;           main                                                                                                                        ;
+;           gengrid                                                                                                                     ;
 ;----------[parameters]-----------------------------------------------------------------------------------------------------------------;
 ;           takes no parameters                                                                                                         ;
 ;---------------------------------------------------------------------------------------------------------------------------------------;
@@ -158,29 +162,9 @@ gengrid                                         proc
                                                 movss                       xmm3, startval
                                                 call                        gen3dgrid
 
-                                                ;----[Multiply]--------------------------------------------------------------------------
-;                                               lea                         rax, tov
-;                                               xor                         rcx, rcx                                                                
-;                                               movss                       xmm1, mult
-
-;                                               gridmult:
-;                                               movss                       xmm0, [rax].vector3.x
-;                                               mulss                       xmm0, xmm1
-;                                               addss                       xmm0, disp
-;                                               movss                       [rax].vector3.x, xmm0
-;                                               movss                       xmm0, [rax].vector3.y
-;                                               mulss                       xmm0, xmm1
-;                                               addss                       xmm0, disp
-;                                               movss                       [rax].vector3.y, xmm0
-;                                               movss                       xmm0, [rax].vector3.z
-;                                               mulss                       xmm0, xmm1
-;                                               addss                       xmm0, disp
-;                                               movss                       [rax].vector3.z, xmm0
-
-;                                               add                         rax, sizeof vector3
-;                                               inc                         rcx
-;                                               cmp                         rcx, lentov
-;                                               jl                          gridmult
-
                                                 ret
 gengrid                                         endp
+;-----------------------------------------------------------------------------------------------------------------------------------;
+                                                endif                                                                               ; header guard end
+;-----------------------------------------------------------------------------------------------------------------------------------;
+
