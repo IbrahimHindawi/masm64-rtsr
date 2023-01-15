@@ -32,45 +32,20 @@ UpdateScene                                     proc                            
                                                 addss                       xmm0, distance
                                                 movss                       position.vector3.x, xmm0
 
-                                                ;------[Load Points]----------------------------------------------------------------
+                                                ;------[Rotate X]-------------------------------------------------------------------
                                                 lea                         rax, tov
                                                 lea                         rbx, tov_render
-                                                xor                         edx, edx
-
                                                 xor                         rcx, rcx                                                                
-                                                loadpoints:
 
-                                                mov                         edx, [rax].vector3.x
-                                                mov                         [rbx].vector3.x, edx
-
-                                                mov                         edx, [rax].vector3.y
-                                                mov                         [rbx].vector3.y, edx
-
-                                                mov                         edx, [rax].vector3.z
-                                                mov                         [rbx].vector3.z, edx
-
-                                                add                         rax, sizeof vector3
-                                                add                         rbx, sizeof vector3
-                                                inc                         rcx
-                                                cmp                         rcx, lentov
-                                                jl                          loadpoints
-
-                                                ;------[Transform]------------------------------------------------------------------
-                                                lea                         rbx, tov_render
-
-                                                xor                         rcx, rcx                                                                
                                                 rotateloop:
                                                 movss                       xmm0, angle
                                                 call                        vector3_rotate_x
-                                                movss                       xmm0, angle
-                                                call                        vector3_rotate_y
-                                                movss                       xmm0, angle
-                                                call                        vector3_rotate_z
 
                                                 movss                       xmm1, [rbx].vector3.z
                                                 addss                       xmm1, camera.vector3.z
                                                 movss                       [rbx].vector3.z, xmm1
 
+                                                add                         rax, sizeof vector3
                                                 add                         rbx, sizeof vector3
                                                 inc                         rcx
                                                 cmp                         rcx, lentov

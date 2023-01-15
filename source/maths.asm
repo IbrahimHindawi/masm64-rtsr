@@ -55,10 +55,6 @@ junk                                            real4               0.0
 ;-----------------------------------------------------------------------------------------------------------------------------------;
 projection                                      proc
 
-                                                mov                 r9, rcx                                                         ; save length
-                                                xor                 rcx, rcx                                                        ; reset counter
-
-                                                projloop:
                                                 movss               xmm1, [rdx].vector3.x
                                                 movss               xmm2, [rdx].vector3.z
                                                 mulss               xmm1, xmm0
@@ -71,20 +67,13 @@ projection                                      proc
                                                 divss               xmm1, xmm2
                                                 movss               [r8].vector2.y, xmm1
 
-                                                add                 rdx, sizeof vector3
-                                                add                 r8, sizeof vector2
-                                                inc                 rcx
-                                                cmp                 rcx, r9
-                                                jl                  projloop
-
                                                 ret
 projection                                      endp
 
-
 ;----------[procedure]--------------------------------------------------------------------------------------------------------------;
-;           vector3rotatex                                                                                                          ;
+;           vector3_rotate_x                                                                                                        ;
 ;----------[parameters]-------------------------------------------------------------------------------------------------------------;
-;           rax  address of vector                                                                                                  ;
+;           rbx  address of destination vector                                                                                      ;
 ;           xmm0 angle                                                                                                              ;
 ;-----------------------------------------------------------------------------------------------------------------------------------;
 vector3_rotate_x                                proc
@@ -102,20 +91,18 @@ vector3_rotate_x                                proc
                                                 fst                 tempcos
                                                 fstp                st(0)
                                                 movss               xmm1, tempcos
-                                                ;movss               xmm1, cosofhalfpi
+;                                               movss               xmm1, cosofhalfpi
 ;                                               sin(angle)
                                                 fld                 tempsin
                                                 fsin
                                                 fst                 tempsin
                                                 fstp                st(0)
                                                 movss               xmm2, tempsin
-                                                ;movss               xmm2, sinofhalfpi
-;                                               load y & z
-                                                movss               xmm3, [rax].vector3.y
-                                                movss               xmm4, [rax].vector3.z
+;                                               movss               xmm2, sinofhalfpi
 ;                                               copy x
-                                                movss               xmm7, [rax].vector3.x
-                                                movss               [rbx].vector3.x, xmm7
+;                                               load y & z
+                                                movss               xmm3, [rbx].vector3.y
+                                                movss               xmm4, [rbx].vector3.z
 ;                                               calculate y
                                                 xorps               xmm5, xmm5
                                                 xorps               xmm6, xmm6
@@ -136,6 +123,114 @@ vector3_rotate_x                                proc
                                                 movss               [rbx].vector3.z, xmm5
                                                 ret
 vector3_rotate_x                                endp
+
+;----------[procedure]--------------------------------------------------------------------------------------------------------------;
+;           vector3_rotate_y                                                                                                        ;
+;----------[parameters]-------------------------------------------------------------------------------------------------------------;
+;           rbx  address of destination vector                                                                                      ;
+;           xmm0 angle                                                                                                              ;
+;-----------------------------------------------------------------------------------------------------------------------------------;
+vector3_rotate_y                                proc
+;                                               x * cos(angle) - z * sin(angle)
+;                                               y
+;                                               x * sin(angle) + z * cos(angle)
+;                                               convert from degrees to radians
+                                                movss               xmm1, degtorad
+                                                mulss               xmm0, xmm1
+                                                movss               tempcos, xmm0
+                                                movss               tempsin, xmm0
+;                                               cos(angle)
+                                                fld                 tempcos
+                                                fcos
+                                                fst                 tempcos
+                                                fstp                st(0)
+                                                movss               xmm1, tempcos
+;                                               movss               xmm1, cosofhalfpi
+;                                               sin(angle)
+                                                fld                 tempsin
+                                                fsin
+                                                fst                 tempsin
+                                                fstp                st(0)
+                                                movss               xmm2, tempsin
+;                                               movss               xmm2, sinofhalfpi
+;                                               copy y
+;                                               load x & z
+                                                movss               xmm3, [rbx].vector3.x
+                                                movss               xmm4, [rbx].vector3.z
+;                                               calculate x
+                                                xorps               xmm5, xmm5
+                                                xorps               xmm6, xmm6
+                                                movss               xmm5, xmm3                                                      ; x
+                                                mulss               xmm5, xmm1                                                      ; x * cos(angle)
+                                                movss               xmm6, xmm4                                                      ; z
+                                                mulss               xmm6, xmm2                                                      ; z * sin(angle)
+                                                subss               xmm5, xmm6
+                                                movss               [rbx].vector3.x, xmm5
+;                                               calculate z
+                                                xorps               xmm5, xmm5
+                                                xorps               xmm6, xmm6
+                                                movss               xmm5, xmm3                                                      ; x
+                                                mulss               xmm5, xmm2                                                      ; x * sin(angle)
+                                                movss               xmm6, xmm4                                                      ; z
+                                                mulss               xmm6, xmm1                                                      ; z * cos(angle)
+                                                addss               xmm5, xmm6
+                                                movss               [rbx].vector3.z, xmm5
+                                                ret
+vector3_rotate_y                                endp
+
+;----------[procedure]--------------------------------------------------------------------------------------------------------------;
+;           vector3_rotate_z                                                                                                        ;
+;----------[parameters]-------------------------------------------------------------------------------------------------------------;
+;           rbx  address of destination vector                                                                                      ;
+;           xmm0 angle                                                                                                              ;
+;-----------------------------------------------------------------------------------------------------------------------------------;
+vector3_rotate_z                                proc
+;                                               x * cos(angle) - y * sin(angle)
+;                                               x * sin(angle) + y * cos(angle)
+;                                               z
+;                                               convert from degrees to radians
+                                                movss               xmm1, degtorad
+                                                mulss               xmm0, xmm1
+                                                movss               tempcos, xmm0
+                                                movss               tempsin, xmm0
+;                                               cos(angle)
+                                                fld                 tempcos
+                                                fcos
+                                                fst                 tempcos
+                                                fstp                st(0)
+                                                movss               xmm1, tempcos
+;                                               movss               xmm1, cosofhalfpi
+;                                               sin(angle)
+                                                fld                 tempsin
+                                                fsin
+                                                fst                 tempsin
+                                                fstp                st(0)
+                                                movss               xmm2, tempsin
+;                                               movss               xmm2, sinofhalfpi
+;                                               copy z
+;                                               load x & y
+                                                movss               xmm3, [rbx].vector3.x
+                                                movss               xmm4, [rbx].vector3.y
+;                                               calculate x
+                                                xorps               xmm5, xmm5
+                                                xorps               xmm6, xmm6
+                                                movss               xmm5, xmm3                                                      ; x
+                                                mulss               xmm5, xmm1                                                      ; x * cos(angle)
+                                                movss               xmm6, xmm4                                                      ; z
+                                                mulss               xmm6, xmm2                                                      ; z * sin(angle)
+                                                subss               xmm5, xmm6
+                                                movss               [rbx].vector3.x, xmm5
+;                                               calculate z
+                                                xorps               xmm5, xmm5
+                                                xorps               xmm6, xmm6
+                                                movss               xmm5, xmm3                                                      ; x
+                                                mulss               xmm5, xmm2                                                      ; x * sin(angle)
+                                                movss               xmm6, xmm4                                                      ; z
+                                                mulss               xmm6, xmm1                                                      ; z * cos(angle)
+                                                addss               xmm5, xmm6
+                                                movss               [rbx].vector3.y, xmm5
+                                                ret
+vector3_rotate_z                                endp
 
 ;-----------------------------------------------------------------------------------------------------------------------------------;
                                                 endif                                                                               ; header guard end
