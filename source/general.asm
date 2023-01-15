@@ -3,18 +3,18 @@
 ;                  RTSR MASM64: Real-Time Software Rendering in Microsoft Macro Assembler 64-bit                                    ;
 ;                                                                                                                                   ;
 ;-----------------------------------------------------------------------------------------------------------------------------------;
-;                                                                                                                                   -
-; UpdateScene                                                                                                                       -
-;                                                                                                                                   -
-;------------------------------------------------------------------------------------------------------------------------------------
-;                                                                                                                                   -
-; In:  <No Parameters>                                                                                                              -
-;                                                                                                                                   -
-; This function updates the scene geometry and performes any other per-render updates required.                                     -
-;                                                                                                                                   -
-;------------------------------------------------------------------------------------------------------------------------------------
+;                                                                                                                                   ;
+; UpdateScene                                                                                                                       ;
+;                                                                                                                                   ;
+;-----------------------------------------------------------------------------------------------------------------------------------;
+;                                                                                                                                   ;
+; In:  <No Parameters>                                                                                                              ;
+;                                                                                                                                   ;
+; This function updates the scene geometry and performes any other per-render updates required.                                     ;
+;                                                                                                                                   ;
+;-----------------------------------------------------------------------------------------------------------------------------------;
 
-UpdateScene                                     proc                                                                               ; Declare function
+UpdateScene                                     proc                                                                                ; Declare function
 
 ;------[Local Data]------------------------------------------------------------------------------------------------------------------
 
@@ -22,9 +22,9 @@ UpdateScene                                     proc                            
 
 ;------[Save incoming registers]-----------------------------------------------------------------------------------------------------
 
-                                                Save_Registers                                                                     ; Save incoming registers
+                                                Save_Registers                                                                      ; Save incoming registers
 
-                                                ;------[Increment position variable]------------------------------------------------
+                                                ;------[Increment position variable]-------------------------------------------------
 ;                                               mov                         ecx, position.vector3.x
 ;                                               inc                         ecx
 ;                                               mov                         position.vector3.x, ecx
@@ -32,7 +32,7 @@ UpdateScene                                     proc                            
                                                 addss                       xmm0, distance
                                                 movss                       position.vector3.x, xmm0
 
-                                                ;------[Load Points]----------------------------------------------------------------
+                                                ;------[Load Points]-----------------------------------------------------------------
                                                 lea                         rax, tov
                                                 lea                         rbx, tov_render
                                                 xor                         edx, edx
@@ -55,7 +55,7 @@ UpdateScene                                     proc                            
                                                 cmp                         rcx, lentov
                                                 jl                          loadpoints
 
-                                                ;------[Transform]------------------------------------------------------------------
+                                                ;------[Transform]-------------------------------------------------------------------
                                                 lea                         rbx, tov_render
 
                                                 xor                         rcx, rcx                                                                
@@ -173,7 +173,7 @@ RenderScene                                     proc                            
 ;                                               call                      drawLine
 
                                                 ;----[Fill Background]-------------------------------------------------------------------
-                                                mov                         r9d, 0111111h                                              ; color
+                                                mov                         r9d, 0111111h                                               ; color
                                                 lea                         r8, render_frame                                            ; framebuffer address
                                                 call                        fillBackground
 
