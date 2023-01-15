@@ -188,25 +188,21 @@ RenderScene                                     proc                            
                                                 call                        drawRect
 
                                                 ;----[Draw Tensor of Vectors]------------------------------------------------------------
-                                                lea                         rax, tov_proj
-                                                xor                         rcx, rcx                                                                
+                                                lea                         rbx, tov_proj
 
+                                                xor                         rsi, rsi                                                                
                                                 drawgrid:
-                                                push                        rcx
-                                                push                        rax
                                                 mov                         r12d, 3                                                     ; h
                                                 mov                         r11d, 3                                                     ; w
                                                 mov                         r9d, 00FF0000h                                              ; color
                                                 lea                         r8, render_frame                                            ; framebuffer address
-                                                cvttss2si                   edx, [rax].vector2.x
-                                                cvttss2si                   ecx, [rax].vector2.y
+                                                cvttss2si                   edx, [rbx].vector2.x
+                                                cvttss2si                   ecx, [rbx].vector2.y
                                                 call                        drawRect
-                                                pop                         rax
-                                                pop                         rcx
 
-                                                add                         rax, sizeof vector2
-                                                inc                         rcx
-                                                cmp                         rcx, lentov_proj
+                                                add                         rbx, sizeof vector2
+                                                inc                         rsi
+                                                cmp                         rsi, lentov_proj
                                                 jl                          drawgrid
 
                                                 ;-----[Update Frame Buffer]--------------------------------------------------------------

@@ -41,7 +41,6 @@ drawPixel                                       proc ; ( rcx: posX, rdx: posY, r
 
                                                 ; clean exit
                                                 drawExit:
-;                                               xor                         rax, rax                                                ; exit code
                                                 ret
 drawPixel                                       endp
 
@@ -73,7 +72,6 @@ drawLine                                        proc ; ( rcx: posX, rdx: posY, r
                                                 jle                         draw
 
                                                 drawExit:
-;                                               xor                         rax, rax                                                ; exit code
                                                 ret
 drawLine                                        endp
 
@@ -94,7 +92,6 @@ drawRect                                        proc ; ( rcx: posX, rdx: posY, r
                                                 cmp                         edx, r12d                                               ; y ? h
                                                 jl                          drawY                                                   ; y < h -> reset
 
-;                                               xor                         rax, rax                                                ; exit code
                                                 ret
 drawRect                                        endp
 
@@ -115,7 +112,6 @@ fillBackground                                  proc ; ( r8: &renderFrame, r9d: 
                                                 cmp                         r8, rcx
                                                 jl                          draw
 
-;                                               xor                         rax, rax
                                                 ret
 fillBackground                                  endp
 ;-----------------------------------------------------------------------------------------------------------------------------------;
