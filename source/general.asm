@@ -189,19 +189,19 @@ RenderScene                                     proc                            
                                                 call                        drawRect
 
                                                 ;----[Draw Tensor of Vectors]------------------------------------------------------------
-                                                lea                         rbx, tov_proj
+                                                lea                         rdi, tov_proj
 
-                                                xor                         rsi, rsi                                                                
+                                                xor                         rsi, rsi
                                                 drawgrid:
                                                 mov                         r12d, 3                                                     ; h
                                                 mov                         r11d, 3                                                     ; w
                                                 mov                         r9d, 00FF0000h                                              ; color
                                                 lea                         r8, render_frame                                            ; framebuffer address
-                                                cvttss2si                   edx, [rbx].vector2.x
-                                                cvttss2si                   ecx, [rbx].vector2.y
+                                                cvttss2si                   edx, [rdi].vector2.x
+                                                cvttss2si                   ecx, [rdi].vector2.y
                                                 call                        drawRect
 
-                                                add                         rbx, sizeof vector2
+                                                add                         rdi, sizeof vector2
                                                 inc                         rsi
                                                 cmp                         rsi, lentov_proj
                                                 jl                          drawgrid
