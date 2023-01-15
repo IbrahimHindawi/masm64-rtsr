@@ -51,9 +51,8 @@ junk                                            real4               0.0
 ;                                                                                                                                   ;
 ;----------[parameters]-------------------------------------------------------------------------------------------------------------;
 ;                                                                                                                                   ;
-;           rcx  length of array                                                                                                    ;
-;           rdx  source 3d array of points                                                                                          ;
-;           r8   destination 2d array of points                                                                                     ;
+;           rcx  source 3d array of points                                                                                          ;
+;           rdx  destination 2d array of points                                                                                     ;
 ;           xmm0 field of view                                                                                                      ;
 ;                                                                                                                                   ;
 ;----------[description]------------------------------------------------------------------------------------------------------------;
@@ -61,17 +60,17 @@ junk                                            real4               0.0
 ;-----------------------------------------------------------------------------------------------------------------------------------;
 projection                                      proc
 
-                                                movss               xmm1, [rdx].vector3.x
-                                                movss               xmm2, [rdx].vector3.z
+                                                movss               xmm1, [rcx].vector3.x
+                                                movss               xmm2, [rcx].vector3.z
                                                 mulss               xmm1, xmm0
                                                 divss               xmm1, xmm2
-                                                movss               [r8].vector2.x, xmm1
+                                                movss               [rdx].vector2.x, xmm1
 
-                                                movss               xmm1, [rdx].vector3.y
-                                                movss               xmm2, [rdx].vector3.z
+                                                movss               xmm1, [rcx].vector3.y
+                                                movss               xmm2, [rcx].vector3.z
                                                 mulss               xmm1, xmm0
                                                 divss               xmm1, xmm2
-                                                movss               [r8].vector2.y, xmm1
+                                                movss               [rdx].vector2.y, xmm1
 
                                                 ret
 projection                                      endp
@@ -82,7 +81,7 @@ projection                                      endp
 ;                                                                                                                                   ;
 ;----------[parameters]-------------------------------------------------------------------------------------------------------------;
 ;                                                                                                                                   ;
-;           rbx  address of destination vector                                                                                      ;
+;           rcx  address of destination vector                                                                                      ;
 ;           xmm0 angle                                                                                                              ;
 ;                                                                                                                                   ;
 ;----------[description]------------------------------------------------------------------------------------------------------------;
@@ -114,8 +113,8 @@ vector3_rotate_x                                proc
 ;                                               movss               xmm2, sinofhalfpi
 ;                                               copy x
 ;                                               load y & z
-                                                movss               xmm3, [rbx].vector3.y
-                                                movss               xmm4, [rbx].vector3.z
+                                                movss               xmm3, [rcx].vector3.y
+                                                movss               xmm4, [rcx].vector3.z
 ;                                               calculate y
                                                 xorps               xmm5, xmm5
                                                 xorps               xmm6, xmm6
@@ -124,7 +123,7 @@ vector3_rotate_x                                proc
                                                 movss               xmm6, xmm4                                                      ; z
                                                 mulss               xmm6, xmm2                                                      ; z * sin(angle)
                                                 subss               xmm5, xmm6
-                                                movss               [rbx].vector3.y, xmm5
+                                                movss               [rcx].vector3.y, xmm5
 ;                                               calculate z
                                                 xorps               xmm5, xmm5
                                                 xorps               xmm6, xmm6
@@ -133,7 +132,7 @@ vector3_rotate_x                                proc
                                                 movss               xmm6, xmm4                                                      ; z
                                                 mulss               xmm6, xmm1                                                      ; z * cos(angle)
                                                 addss               xmm5, xmm6
-                                                movss               [rbx].vector3.z, xmm5
+                                                movss               [rcx].vector3.z, xmm5
                                                 ret
 vector3_rotate_x                                endp
 
@@ -143,7 +142,7 @@ vector3_rotate_x                                endp
 ;                                                                                                                                   ;
 ;----------[parameters]-------------------------------------------------------------------------------------------------------------;
 ;                                                                                                                                   ;
-;           rbx  address of destination vector                                                                                      ;
+;           rcx  address of destination vector                                                                                      ;
 ;           xmm0 angle                                                                                                              ;
 ;                                                                                                                                   ;
 ;----------[description]------------------------------------------------------------------------------------------------------------;
@@ -175,8 +174,8 @@ vector3_rotate_y                                proc
 ;                                               movss               xmm2, sinofhalfpi
 ;                                               copy y
 ;                                               load x & z
-                                                movss               xmm3, [rbx].vector3.x
-                                                movss               xmm4, [rbx].vector3.z
+                                                movss               xmm3, [rcx].vector3.x
+                                                movss               xmm4, [rcx].vector3.z
 ;                                               calculate x
                                                 xorps               xmm5, xmm5
                                                 xorps               xmm6, xmm6
@@ -185,7 +184,7 @@ vector3_rotate_y                                proc
                                                 movss               xmm6, xmm4                                                      ; z
                                                 mulss               xmm6, xmm2                                                      ; z * sin(angle)
                                                 subss               xmm5, xmm6
-                                                movss               [rbx].vector3.x, xmm5
+                                                movss               [rcx].vector3.x, xmm5
 ;                                               calculate z
                                                 xorps               xmm5, xmm5
                                                 xorps               xmm6, xmm6
@@ -194,7 +193,7 @@ vector3_rotate_y                                proc
                                                 movss               xmm6, xmm4                                                      ; z
                                                 mulss               xmm6, xmm1                                                      ; z * cos(angle)
                                                 addss               xmm5, xmm6
-                                                movss               [rbx].vector3.z, xmm5
+                                                movss               [rcx].vector3.z, xmm5
                                                 ret
 vector3_rotate_y                                endp
 
@@ -204,7 +203,7 @@ vector3_rotate_y                                endp
 ;                                                                                                                                   ;
 ;----------[parameters]-------------------------------------------------------------------------------------------------------------;
 ;                                                                                                                                   ;
-;           rbx  address of destination vector                                                                                      ;
+;           rcx  address of destination vector                                                                                      ;
 ;           xmm0 angle                                                                                                              ;
 ;                                                                                                                                   ;
 ;----------[description]------------------------------------------------------------------------------------------------------------;
@@ -236,8 +235,8 @@ vector3_rotate_z                                proc
 ;                                               movss               xmm2, sinofhalfpi
 ;                                               copy z
 ;                                               load x & y
-                                                movss               xmm3, [rbx].vector3.x
-                                                movss               xmm4, [rbx].vector3.y
+                                                movss               xmm3, [rcx].vector3.x
+                                                movss               xmm4, [rcx].vector3.y
 ;                                               calculate x
                                                 xorps               xmm5, xmm5
                                                 xorps               xmm6, xmm6
@@ -246,7 +245,7 @@ vector3_rotate_z                                proc
                                                 movss               xmm6, xmm4                                                      ; z
                                                 mulss               xmm6, xmm2                                                      ; z * sin(angle)
                                                 subss               xmm5, xmm6
-                                                movss               [rbx].vector3.x, xmm5
+                                                movss               [rcx].vector3.x, xmm5
 ;                                               calculate z
                                                 xorps               xmm5, xmm5
                                                 xorps               xmm6, xmm6
@@ -255,7 +254,7 @@ vector3_rotate_z                                proc
                                                 movss               xmm6, xmm4                                                      ; z
                                                 mulss               xmm6, xmm1                                                      ; z * cos(angle)
                                                 addss               xmm5, xmm6
-                                                movss               [rbx].vector3.y, xmm5
+                                                movss               [rcx].vector3.y, xmm5
                                                 ret
 vector3_rotate_z                                endp
 

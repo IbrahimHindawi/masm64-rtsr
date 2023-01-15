@@ -33,32 +33,32 @@ UpdateScene                                     proc                            
                                                 movss                       position.vector3.x, xmm0
 
                                                 ;------[Load Points]-----------------------------------------------------------------
-                                                lea                         rax, tov
-                                                lea                         rbx, tov_render
-                                                xor                         edx, edx
+                                                xor                         r8d, r8d
+                                                lea                         rdx, tov_render
+                                                lea                         rcx, tov
 
-                                                xor                         rcx, rcx                                                                
+                                                xor                         rsi, rsi                                                                
                                                 loadpoints:
 
-                                                mov                         edx, [rax].vector3.x
-                                                mov                         [rbx].vector3.x, edx
+                                                mov                         r8d, [rcx].vector3.x
+                                                mov                         [rdx].vector3.x, r8d
 
-                                                mov                         edx, [rax].vector3.y
-                                                mov                         [rbx].vector3.y, edx
+                                                mov                         r8d, [rcx].vector3.y
+                                                mov                         [rdx].vector3.y, r8d
 
-                                                mov                         edx, [rax].vector3.z
-                                                mov                         [rbx].vector3.z, edx
+                                                mov                         r8d, [rcx].vector3.z
+                                                mov                         [rdx].vector3.z, r8d
 
-                                                add                         rax, sizeof vector3
-                                                add                         rbx, sizeof vector3
-                                                inc                         rcx
-                                                cmp                         rcx, lentov
+                                                add                         rcx, sizeof vector3
+                                                add                         rdx, sizeof vector3
+                                                inc                         rsi
+                                                cmp                         rsi, lentov
                                                 jl                          loadpoints
 
                                                 ;------[Transform]-------------------------------------------------------------------
-                                                lea                         rbx, tov_render
+                                                lea                         rcx, tov_render
 
-                                                xor                         rcx, rcx                                                                
+                                                xor                         rsi, rsi                                                                
                                                 rotateloop:
                                                 movss                       xmm0, angle
                                                 call                        vector3_rotate_x
@@ -67,27 +67,28 @@ UpdateScene                                     proc                            
                                                 movss                       xmm0, angle
                                                 call                        vector3_rotate_z
 
-                                                movss                       xmm1, [rbx].vector3.z
+                                                movss                       xmm1, [rcx].vector3.z
                                                 addss                       xmm1, camera.vector3.z
-                                                movss                       [rbx].vector3.z, xmm1
+                                                movss                       [rcx].vector3.z, xmm1
 
-                                                add                         rbx, sizeof vector3
-                                                inc                         rcx
-                                                cmp                         rcx, lentov
+                                                add                         rcx, sizeof vector3
+                                                inc                         rsi
+                                                cmp                         rsi, lentov
                                                 jl                          rotateloop
 
                                                 ;------[Projection]----------------------------------------------------------------------
                                                 movss                       xmm0, field_of_view
-                                                lea                         r8, tov_proj
-                                                lea                         rdx, tov_render
+                                                lea                         rdx, tov_proj
+                                                lea                         rcx, tov_render
 
-                                                xor                         rcx, rcx                                                        ; reset counter
+                                                xor                         rsi, rsi                                                        ; reset counter
                                                 projloop:
                                                 call                        projection
-                                                add                         rdx, sizeof vector3
-                                                add                         r8, sizeof vector2
-                                                inc                         rcx
-                                                cmp                         rcx, lentov
+                                                add                         rdx, sizeof vector2
+                                                add                         rcx, sizeof vector3
+
+                                                inc                         rsi
+                                                cmp                         rsi, lentov
                                                 jl                          projloop
 
                                                 ;----[Screen displacement]---------------------------------------------------------------
