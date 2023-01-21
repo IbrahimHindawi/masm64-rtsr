@@ -13,6 +13,7 @@
                                                 include                     strings.asm                                             ; program strings
                                                 include                     variables.asm                                           ; program variables
                                                 .code                                                                               ;
+                                                include                     say.asm                                                 ; printing
                                                 include                     callbacks.asm                                           ; program callbacks
                                                 include                     common.asm                                              ; program lookups
                                                 include                     general.asm                                             ; program logic

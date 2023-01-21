@@ -24,6 +24,17 @@ UpdateScene                                     proc                            
 
                                                 Save_Registers                                                                      ; Save incoming registers
 
+                                                ;------[Get time]--------------------------------------------------------------------
+                                                cpuid
+
+                                                mov                         rdx, 0
+                                                mov                         rcx, 10
+                                                call                        SleepEx
+
+                                                call                        GetTickCount
+                                                mov                         r12, rax
+
+
                                                 ;------[Increment position variable]-------------------------------------------------
 ;                                               mov                         ecx, position.vector3.x
 ;                                               inc                         ecx
@@ -92,20 +103,20 @@ UpdateScene                                     proc                            
                                                 jl                          projloop
 
                                                 ;----[Screen displacement]---------------------------------------------------------------
-                                                lea                         rax, tov_proj
-                                                xor                         rcx, rcx                                                                
+                                                lea                         rcx, tov_proj
 
+                                                xor                         rsi, rsi                                                                
                                                 gridmult:
-                                                movss                       xmm0, [rax].vector2.x
+                                                movss                       xmm0, [rcx].vector2.x
                                                 addss                       xmm0, disp
-                                                movss                       [rax].vector2.x, xmm0
-                                                movss                       xmm0, [rax].vector2.y
+                                                movss                       [rcx].vector2.x, xmm0
+                                                movss                       xmm0, [rcx].vector2.y
                                                 addss                       xmm0, disp
-                                                movss                       [rax].vector2.y, xmm0
+                                                movss                       [rcx].vector2.y, xmm0
 
-                                                add                         rax, sizeof vector2
-                                                inc                         rcx
-                                                cmp                         rcx, lentov_proj
+                                                add                         rcx, sizeof vector2
+                                                inc                         rsi
+                                                cmp                         rsi, lentov_proj
                                                 jl                          gridmult
 
                                                 movss                       xmm0, angle
@@ -122,7 +133,11 @@ UpdateScene                                     proc                            
                                                 ;------[----------------------------------------------------------------------------
                                                 ;------[----------------------------------------------------------------------------
                                                 ;------[----------------------------------------------------------------------------
-
+                                                ;------[Get time]--------------------------------------------------------------------
+                                                call                        GetTickCount
+                                                sub                         rax, r12
+                                                mov                         rcx, rax
+                                                call                        sayreg
 ;------[Restore incoming registers]--------------------------------------------------------------------------------------------------
 
                                                 align                       qword                                                   ; Set qword alignment

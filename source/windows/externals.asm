@@ -41,6 +41,21 @@ extrn                                            __imp_GetThreadDesktop:qword   
 extrn                                            __imp_GetWindowTextA:qword                                            ;
 extrn                                            __imp_GetCommandLineA:qword                                            ;
 
+extrn               __imp_GetStdHandle:qword
+GetStdHandle        textequ     <__imp_GetStdHandle>
+
+extrn               __imp_WriteFile:qword
+WriteFile           textequ     <__imp_WriteFile>
+
+extrn               __imp_ReadFile:qword
+ReadFile            textequ     <__imp_ReadFile>
+
+extrn               __imp_SleepEx:qword
+SleepEx             textequ     <__imp_SleepEx>
+
+extrn               __imp_GetTickCount:qword
+GetTickCount        textequ     <__imp_GetTickCount>
+
 extrn               __imp_GetModuleHandleA:qword
 GetModuleHandle     textequ     <__imp_GetModuleHandleA>
 
