@@ -34,7 +34,7 @@ say_buffer                                      byte                            
 .code
 
 sayreg                                          proc
-                                                push                                            rbx
+                                                Save_Registers
 
                                                 mov                                             reg_buffer, rcx
                                                 lea                                             rcx, reg_buffer
@@ -80,7 +80,6 @@ sayreg                                          proc
                                                 mov                                             r8, reg_buffer
                                                 shr                                             r8, 8
                                                 mov                                             reg_buffer, r8
-;                                               inc                                             rsi
                                                 add                                             rsi, 2
                                                 cmp                                             rsi, 16
                                                 jl                                              regloop
@@ -93,12 +92,6 @@ sayreg                                          proc
                                                 xor                                             rax, rax
                                             flip_endianess:
                                                 mov                                             al, byte ptr [rcx + rdi]
-
-;                                               cmp                                             al, 9
-;                                               jle                                             numeric_skip
-;                                               sub                                             al, 32
-
-;                                           numeric_skip:
                                                 mov                                             byte ptr [rdx + rsi], al
 
                                                 inc                                             rsi
@@ -119,7 +112,7 @@ sayreg                                          proc
                                                 call                                            WriteFile
 
                                                 add                                             rsp, 40
-                                                pop                                             rbx
+                                                Restore_Registers
 ;                                               xor                                             rax, rax                            ; return zero
                                                 ret                                                                                 ; return
 sayreg                                          endp                                                                                ; end proc

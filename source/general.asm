@@ -24,16 +24,50 @@ UpdateScene                                     proc                            
 
                                                 Save_Registers                                                                      ; Save incoming registers
 
-                                                ;------[Get time]--------------------------------------------------------------------
-                                                cpuid
+                                                ;------[Delta-Time Delay]------------------------------------------------------------
+                                                mov                         r9, frame_target_time                                   ; fps time
+                                                xor                         r8, r8                                                  ; ZERO
 
-                                                mov                         rdx, 0
-                                                mov                         rcx, 10
+;                                               rdtsc                                                                               ; look into this for high precision performance counter
+                                                cpuid
+                                                call                        GetTickCount                                            ; get elapsed time
+                                                mov                         r8, rax                                                 ; r8 <- elapsed time
+
+                                                cpuid
+                                                call                        GetTickCount                                            ; get elapsed time
+                                                sub                         rax, r8                                                 ; rax = elapsed - old elapsed
+
+                                                sub                         r9, rax                                                 ; fpstime - rax
+                                                mov                         rcx, r9
+                                                call                        sayreg
+
+                                                cmp                         r9, 0
+                                                jg                          is_positive
+                                                jle                         skip
+
+                                            is_positive:
+                                                cmp                         r9, frame_target_time
+                                                jle                         delay
+                                                jg                          skip
+
+                                            delay:
+                                                xor                         rdx, rdx
+                                                mov                         rcx, r9
                                                 call                        SleepEx
 
-                                                call                        GetTickCount
-                                                mov                         r12, rax
+                                            skip:
+                                                nop
 
+
+                                                ;------[Get time]--------------------------------------------------------------------
+;                                               cpuid
+
+;                                               mov                         rdx, 0
+;                                               mov                         rcx, 10
+;                                               call                        SleepEx
+
+;                                               call                        GetTickCount
+;                                               mov                         r15, rax
 
                                                 ;------[Increment position variable]-------------------------------------------------
 ;                                               mov                         ecx, position.vector3.x
@@ -133,11 +167,13 @@ UpdateScene                                     proc                            
                                                 ;------[----------------------------------------------------------------------------
                                                 ;------[----------------------------------------------------------------------------
                                                 ;------[----------------------------------------------------------------------------
+
                                                 ;------[Get time]--------------------------------------------------------------------
-                                                call                        GetTickCount
-                                                sub                         rax, r12
-                                                mov                         rcx, rax
-                                                call                        sayreg
+;                                               call                        GetTickCount
+;                                               sub                         rax, r15
+;                                               mov                         rcx, rax
+;                                               call                        sayreg
+
 ;------[Restore incoming registers]--------------------------------------------------------------------------------------------------
 
                                                 align                       qword                                                   ; Set qword alignment
