@@ -38,8 +38,8 @@ UpdateScene                                     proc                            
                                                 sub                         rax, r8                                                 ; rax = elapsed - old elapsed
 
                                                 sub                         r9, rax                                                 ; fpstime - rax
-                                                mov                         rcx, r9
-                                                call                        sayreg
+;                                               mov                         rcx, r9
+;                                               call                        sayreg
 
                                                 cmp                         r9, 0
                                                 jg                          is_positive
@@ -81,10 +81,9 @@ UpdateScene                                     proc                            
                                                 xor                         r8d, r8d
                                                 lea                         rdx, tov_render
                                                 lea                         rcx, tov
-
                                                 xor                         rsi, rsi                                                                
-                                                loadpoints:
 
+                                        loadpoints:
                                                 mov                         r8d, [rcx].vector3.x
                                                 mov                         [rdx].vector3.x, r8d
 
@@ -102,9 +101,9 @@ UpdateScene                                     proc                            
 
                                                 ;------[Transform]-------------------------------------------------------------------
                                                 lea                         rcx, tov_render
-
                                                 xor                         rsi, rsi                                                                
-                                                rotateloop:
+
+                                        transformation_loop:
                                                 movss                       xmm0, angle
                                                 call                        vector3_rotate_x
                                                 movss                       xmm0, angle
@@ -119,15 +118,15 @@ UpdateScene                                     proc                            
                                                 add                         rcx, sizeof vector3
                                                 inc                         rsi
                                                 cmp                         rsi, lentov
-                                                jl                          rotateloop
+                                                jl                          transformation_loop
 
                                                 ;------[Projection]----------------------------------------------------------------------
                                                 movss                       xmm0, field_of_view
                                                 lea                         rdx, tov_proj
                                                 lea                         rcx, tov_render
-
                                                 xor                         rsi, rsi                                                        ; reset counter
-                                                projloop:
+
+                                        projloop:
                                                 call                        projection
                                                 add                         rdx, sizeof vector2
                                                 add                         rcx, sizeof vector3
@@ -138,14 +137,14 @@ UpdateScene                                     proc                            
 
                                                 ;----[Screen displacement]---------------------------------------------------------------
                                                 lea                         rcx, tov_proj
-
                                                 xor                         rsi, rsi                                                                
-                                                gridmult:
+
+                                        gridmult:
                                                 movss                       xmm0, [rcx].vector2.x
-                                                addss                       xmm0, disp
+                                                addss                       xmm0, frame_half_resolution_h
                                                 movss                       [rcx].vector2.x, xmm0
                                                 movss                       xmm0, [rcx].vector2.y
-                                                addss                       xmm0, disp
+                                                addss                       xmm0, frame_half_resolution_w
                                                 movss                       [rcx].vector2.y, xmm0
 
                                                 add                         rcx, sizeof vector2
@@ -241,9 +240,9 @@ RenderScene                                     proc                            
 
                                                 ;----[Draw Tensor of Vectors]------------------------------------------------------------
                                                 lea                         rdi, tov_proj
-
                                                 xor                         rsi, rsi
-                                                drawgrid:
+
+                                        drawgrid:
                                                 mov                         r12d, 3                                                     ; h
                                                 mov                         r11d, 3                                                     ; w
                                                 mov                         r9d, 00FF0000h                                              ; color
@@ -424,35 +423,35 @@ SetupMainWindow                                 proc                            
 ; used, so the code after this point proceeds exactly as it would inside WinMain.
 
                                                 ;-----[Load cursor image]----------------------------------------------
-                                                ; xor                 r11, r11                                ; Set cyDesired; uses default if zero: XOR R11 with itself zeroes the register
-                                                ; xor                 r9, r9                                  ; Set cxDesired; uses default if zero: XOR R9 with itself zeroes the register
-                                                ; mov                 r8, image_cursor                        ; Set uType
-                                                ; mov                 rdx, ocr_normal                         ; Set lpszName
-                                                ; xor                 rcx, rcx                                ; Set hInstance
-                                                ; WinCall         LoadImage, 6, rcx, rdx, r8, r9, r11, lr_cur ; Load the standard cursor
-                                                ; mov                 wcl.hCursor, rax                        ; Set wcl.hCursor
+                                                ; xor                 r11, r11                                                          ; Set cyDesired; uses default if zero: XOR R11 with itself zeroes the register
+                                                ; xor                 r9, r9                                                            ; Set cxDesired; uses default if zero: XOR R9 with itself zeroes the register
+                                                ; mov                 r8, image_cursor                                                  ; Set uType
+                                                ; mov                 rdx, ocr_normal                                                   ; Set lpszName
+                                                ; xor                 rcx, rcx                                                          ; Set hInstance
+                                                ; WinCall         LoadImage, 6, rcx, rdx, r8, r9, r11, lr_cur                           ; Load the standard cursor
+                                                ; mov                 wcl.hCursor, rax                                                  ; Set wcl.hCursor
 
                                                 ;-----[Load the large icon]--------------------------------------------
-                                                ; mov                 r11, 32                                 ; Set cyDesited
-                                                ; mov                 r9, 32                                  ; Set cxDesired
-                                                ; mov                 r8, image_icon                          ; Set uType
-                                                ; lea                 rdx, LargeIconResource                  ; Set lpszName
-                                                ; mov                 rcx, hInstance                          ; Set hInstance
-                                                ; WinCall         LoadImage, 6, rcx, rdx, r8, r9, r11, lr_cur ; Load the large icon
-                                                ; mov                 wcl.hIcon, rax                          ; Set wcl.hIcon
+                                                ; mov                 r11, 32                                                           ; Set cyDesited
+                                                ; mov                 r9, 32                                                            ; Set cxDesired
+                                                ; mov                 r8, image_icon                                                    ; Set uType
+                                                ; lea                 rdx, LargeIconResource                                            ; Set lpszName
+                                                ; mov                 rcx, hInstance                                                    ; Set hInstance
+                                                ; WinCall         LoadImage, 6, rcx, rdx, r8, r9, r11, lr_cur                           ; Load the large icon
+                                                ; mov                 wcl.hIcon, rax                                                    ; Set wcl.hIcon
 
                                                 ;----[Load the small icon]---------------------------------------------
-                                                ; mov                 r11, 32                                 ; Set cyDesited
-                                                ; mov                 r9, 32                                  ; Set cxDesired
-                                                ; mov                 r8, image_icon                          ; Set uType
-                                                ; lea                 rdx, SmallIconResource                  ; Set lpszName
-                                                ; mov                 rcx, hInstance                          ; Set hInstance
-                                                ; WinCall         LoadImage, 6, rcx, rdx, r8, r9, r11, lr_cur ; Load the large icon
-                                                ; mov                 wcl.hIconSm, rax                        ; Set wcl.hIcon
+                                                ; mov                 r11, 32                                                           ; Set cyDesited
+                                                ; mov                 r9, 32                                                            ; Set cxDesired
+                                                ; mov                 r8, image_icon                                                    ; Set uType
+                                                ; lea                 rdx, SmallIconResource                                            ; Set lpszName
+                                                ; mov                 rcx, hInstance                                                    ; Set hInstance
+                                                ; WinCall         LoadImage, 6, rcx, rdx, r8, r9, r11, lr_cur                           ; Load the large icon
+                                                ; mov                 wcl.hIconSm, rax                                                  ; Set wcl.hIcon
 
                                                 ;----[Register the window class]---------------------------------------
-                                                lea                 rcx, wcl                                    ; Set lpWndClass
-                                                WinCall             RegisterClassEx, rcx                        ; Register the window class
+                                                lea                 rcx, wcl                                                            ; Set lpWndClass
+                                                WinCall             RegisterClassEx, rcx                                                ; Register the window class
 
                                                 ;----[Create Compat DC]------------------------------------------------
                                                 xor                 rcx, rcx
@@ -460,38 +459,37 @@ SetupMainWindow                                 proc                            
                                                 mov                 frame_device_context, rax                       
 
                                                 ;----[Create the main window]------------------------------------------
-                                                xor                 r15, r15                                    ; Set hWndParent
-                                                mov                 r14, 480                                    ; Set nHeight
-                                                mov                 r13, 640                                    ; Set nWidth
-                                                mov                 r12, 100                                    ; Set y
-                                                mov                 r11, 100                                    ; Set x
-                                                mov                 r9, mw_style                                ; Set dwStyle
-                                                ; mov                 r9, 0                                     ; Set dwStyle
-                                                lea                 r8, mainName                                ; Set lpWindowName
-                                                lea                 rdx, mainClass                              ; Set lpClassName
-                                                xor                 rcx, rcx                                    ; Set dwExStyle
+                                                xor                 r15, r15                                                            ; Set hWndParent
+                                                mov                 r14, frame_resolution_h                                             ; Set nHeight
+                                                mov                 r13, frame_resolution_w                                             ; Set nWidth
+                                                mov                 r12, 300                                                            ; Set y
+                                                mov                 r11, 400                                                            ; Set x
+                                                mov                 r9, mw_style                                                        ; Set dwStyle
+                                                lea                 r8, mainName                                                        ; Set lpWindowName
+                                                lea                 rdx, mainClass                                                      ; Set lpClassName
+                                                xor                 rcx, rcx                                                            ; Set dwExStyle
                                                 WinCall             CreateWindowEx, rcx, rdx, r8, r9, r11, r12, r13, r14, r15, 0, hInstance, 0
-                                                mov                 Main_Handle, rax                            ; Save the main window handle
+                                                mov                 Main_Handle, rax                                                    ; Save the main window handle
 
                                                 ;----[Ensure main window displayed and updated]------------------------
-                                                mov                 rdx, sw_show                                ; Set nCmdShow
-                                                mov                 rcx, rax                                    ; Set hWnd
-                                                WinCall             ShowWindow, rcx, rdx                        ; Display the window
-;                                               mov                 rax, r15                                    ; Reset the return value
+                                                mov                 rdx, sw_show                                                        ; Set nCmdShow
+                                                mov                 rcx, rax                                                            ; Set hWnd
+                                                WinCall             ShowWindow, rcx, rdx                                                ; Display the window
+;                                               mov                 rax, r15                                                            ; Reset the return value
 
-                                                mov                 rcx, Main_Handle                            ; Set hWnd
-                                                WinCall             UpdateWindow, rcx                           ; Ensure window updated
+                                                mov                 rcx, Main_Handle                                                    ; Set hWnd
+                                                WinCall             UpdateWindow, rcx                                                   ; Ensure window updated
 
 ;------[Restore incoming registers]-------------------------------------------------------------------------------------
 
-                                                align               qword                                             ; Set qword alignment
-SetupMainWindow_Exit:                           Restore_Registers                                                     ; Restore incoming registers
+                                                align               qword                                                               ; Set qword alignment
+SetupMainWindow_Exit:                           Restore_Registers                                                                       ; Restore incoming registers
 
 ;------[Return to caller]-----------------------------------------------------------------------------------------------
 
-                                                ret                                                                   ; Return to caller
+                                                ret                                                                                     ; Return to caller
 
-SetupMainWindow                                 endp                                                                  ; End function
+SetupMainWindow                                 endp                                                                                    ; End function
 
 
 
@@ -507,31 +505,31 @@ SetupMainWindow                                 endp                            
 ;                                                                                                                      -
 ;-----------------------------------------------------------------------------------------------------------------------
 
-Shutdown                                        proc                                                                  ; Declare function
+Shutdown                                        proc                                                                                    ; Declare function
 ;------[Local Data]-----------------------------------------------------------------------------------------------------
 
-                                                local               holder:qword                                      ;
+                                                local               holder:qword                                                        ;
 
 ;------[Save incoming registers]----------------------------------------------------------------------------------------
 
-                                                Save_Registers                                                        ; Save incoming registers
+                                                Save_Registers                                                                          ; Save incoming registers
 
                                                 ;------[Unregister the main window class]------------------------------
 
-                                                mov                 rdx, hInstance                                    ; Set hInstance
-                                                lea                 rcx, mainClass                                    ; Set lpClassName
-                                                WinCall             UnregisterClass, rcx, rdx                         ; Execute call
+                                                mov                 rdx, hInstance                                                      ; Set hInstance
+                                                lea                 rcx, mainClass                                                      ; Set lpClassName
+                                                WinCall             UnregisterClass, rcx, rdx                                           ; Execute call
 
 ;------[Restore incoming registers]-------------------------------------------------------------------------------------
 
-                                                align               qword                                             ; Set qword alignment
-Shutdown_Exit:                                  Restore_Registers                                                     ; Restore incoming registers
+                                                align               qword                                                               ; Set qword alignment
+Shutdown_Exit:                                  Restore_Registers                                                                       ; Restore incoming registers
 
 ;------[Return to caller]-----------------------------------------------------------------------------------------------
 
-                                                ret                                                                   ; Return to caller
+                                                ret                                                                                     ; Return to caller
 
-Shutdown                                        endp                                                                  ; End function
+Shutdown                                        endp                                                                                    ; End function
 
 
 

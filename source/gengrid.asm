@@ -27,7 +27,6 @@ startval                                        real4                      -1.0 
 incr                                            real4                       ?                                                           ; incremental displacement
 
 mult                                            real4                       50.0                                                        ; scalar multiplier
-disp                                            real4                       200.0                                                       ; scalar multiplier
 
                                                 align 16
 aov                                             vector3                    dimension_2d * sizeof vector3 dup({})                        ; static memory allocation for array of vectors
