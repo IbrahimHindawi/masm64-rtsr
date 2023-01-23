@@ -14,7 +14,7 @@
 
 ;----------[const section]--------------------------------------------------------------------------------------------------------------;
 .const                                                                                                                                  ;
-dimension_1d                                    equ                        8                                                            ;
+dimension_1d                                    equ                        6                                                            ; <- change this
 dimension_2d                                    equ                        dimension_1d * dimension_1d                                  ;
 dimension_3d                                    equ                        dimension_1d * dimension_1d * dimension_1d                   ;
 ;----------[data section]---------------------------------------------------------------------------------------------------------------;
@@ -25,8 +25,6 @@ one                                             real4                       1.0 
 two                                             real4                       2.0                                                         ;
 startval                                        real4                      -1.0                                                         ; first value of the row
 incr                                            real4                       ?                                                           ; incremental displacement
-
-mult                                            real4                       50.0                                                        ; scalar multiplier
 
                                                 align 16
 aov                                             vector3                    dimension_2d * sizeof vector3 dup({})                        ; static memory allocation for array of vectors

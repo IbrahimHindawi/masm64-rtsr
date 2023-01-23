@@ -6,15 +6,16 @@
                                                 include                     windows/windows.asm                                     ; windows api module
 ;-----------------------------------------------[Modules]---------------------------------------------------------------------------;
                                                 include                     gengrid.asm
-;-----------------------------------------------[Constants]-------------------------------------------------------------------------;
-                                                .const                                                                              ;
-                                                include                     constants.asm                                           ; program structs
 ;-----------------------------------------------[Program]---------------------------------------------------------------------------;
-                                                ;static                                                                             ;
-                                                include                     structs.asm                                             ; program structs
+
+                                                .const 
+                                                ainclude                    constants.asm                                           ; program structs
+                                                ainclude                    structs.asm                                             ; program structs
+
                                                 .data                                                                               ;
-                                                include                     strings.asm                                             ; program strings
-                                                include                     variables.asm                                           ; program variables
+                                                ainclude                    strings.asm                                             ; program strings
+                                                ainclude                    variables.asm                                           ; program variables
+
                                                 .code                                                                               ;
                                                 include                     say.asm                                                 ; printing
                                                 include                     callbacks.asm                                           ; program callbacks

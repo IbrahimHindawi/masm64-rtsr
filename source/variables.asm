@@ -18,15 +18,15 @@ camera                                          vector3                     <0.0
 ;-----[D]---------------------------------------------------------------------------------------------------------------
 
 distance                                        real4                       1.0  
-frame_half_resolution_w                         real4                       320.0                                                       ; scalar multiplier
-frame_half_resolution_h                         real4                       240.0                                                       ; scalar multiplier
 
 ;-----[E]---------------------------------------------------------------------------------------------------------------
 
 ;-----[F]---------------------------------------------------------------------------------------------------------------
 
-fwpr_index                                      qword               ?                                                 ; FixWinDbg internal index
-field_of_view                                   real4               200.0  
+fwpr_index                                      qword                       ?                                                 ; FixWinDbg internal index
+field_of_view                                   real4                       200.0  
+frame_half_resolution_w                         real4                       320.0                                                       ; scalar multiplier
+frame_half_resolution_h                         real4                       240.0                                                       ; scalar multiplier
 
 ;-----[G]---------------------------------------------------------------------------------------------------------------
 

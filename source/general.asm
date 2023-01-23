@@ -83,7 +83,7 @@ UpdateScene                                     proc                            
                                                 lea                         rcx, tov
                                                 xor                         rsi, rsi                                                                
 
-                                        loadpoints:
+                                        load_points:
                                                 mov                         r8d, [rcx].vector3.x
                                                 mov                         [rdx].vector3.x, r8d
 
@@ -97,7 +97,7 @@ UpdateScene                                     proc                            
                                                 add                         rdx, sizeof vector3
                                                 inc                         rsi
                                                 cmp                         rsi, lentov
-                                                jl                          loadpoints
+                                                jl                          load_points
 
                                                 ;------[Transform]-------------------------------------------------------------------
                                                 lea                         rcx, tov_render
@@ -126,20 +126,20 @@ UpdateScene                                     proc                            
                                                 lea                         rcx, tov_render
                                                 xor                         rsi, rsi                                                        ; reset counter
 
-                                        projloop:
+                                        projection_loop:
                                                 call                        projection
                                                 add                         rdx, sizeof vector2
                                                 add                         rcx, sizeof vector3
 
                                                 inc                         rsi
                                                 cmp                         rsi, lentov
-                                                jl                          projloop
+                                                jl                          projection_loop
 
                                                 ;----[Screen displacement]---------------------------------------------------------------
                                                 lea                         rcx, tov_proj
                                                 xor                         rsi, rsi                                                                
 
-                                        gridmult:
+                                        screen_displacement:
                                                 movss                       xmm0, [rcx].vector2.x
                                                 addss                       xmm0, frame_half_resolution_h
                                                 movss                       [rcx].vector2.x, xmm0
@@ -150,8 +150,9 @@ UpdateScene                                     proc                            
                                                 add                         rcx, sizeof vector2
                                                 inc                         rsi
                                                 cmp                         rsi, lentov_proj
-                                                jl                          gridmult
+                                                jl                          screen_displacement
 
+                                                ;----[Angle Increment]-------------------------------------------------------------------
                                                 movss                       xmm0, angle
                                                 addss                       xmm0, angleinc
                                                 movss                       angle, xmm0
@@ -242,7 +243,7 @@ RenderScene                                     proc                            
                                                 lea                         rdi, tov_proj
                                                 xor                         rsi, rsi
 
-                                        drawgrid:
+                                        draw_tensor:
                                                 mov                         r12d, 3                                                     ; h
                                                 mov                         r11d, 3                                                     ; w
                                                 mov                         r9d, 00FF0000h                                              ; color
@@ -254,7 +255,7 @@ RenderScene                                     proc                            
                                                 add                         rdi, sizeof vector2
                                                 inc                         rsi
                                                 cmp                         rsi, lentov_proj
-                                                jl                          drawgrid
+                                                jl                          draw_tensor
 
                                                 ;-----[Update Frame Buffer]--------------------------------------------------------------
                                                 xor                         r8, r8
